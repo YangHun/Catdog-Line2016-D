@@ -21,9 +21,11 @@ public class GameManager : MonoBehaviour {
     private bool isFirstFrame = true;
 
     private int LocalPlayCnt = 0;
-    
+    private int LocalPollen = 0;
+    private int[] LocalFlowers;
+
     public enum GameFlow { Load, Menu, Game, Save, Null };
-    private GameFlow _flow_prev = GameFlow.Menu;
+    private GameFlow _flow_prev = GameFlow.Load;
     private GameFlow _flow_next = GameFlow.Null;
 
     public GameFlow CurrentState
@@ -42,10 +44,21 @@ public class GameManager : MonoBehaviour {
             { "None", -1 }
         };
 
-	void Start () {
+    private static PlayerData _data;
+    public static PlayerData Data
+    {
+        get
+        {
+            return _data;
+        }
+    }
+
+    void Start()
+    {
 
         //Singleton Init
-        if (_manager != null) {
+        if (_manager != null)
+        {
             Destroy(this.gameObject);
             return;
         }
@@ -53,7 +66,16 @@ public class GameManager : MonoBehaviour {
         {
             _manager = this;
         }
-        
+
+        if (_data != null){
+            return;
+        }
+        else
+        {
+            _data = new PlayerData();
+        }
+
+        LocalFlowers = new int[_data.FlowerIndex.Count];
 
     }
 	
@@ -63,6 +85,7 @@ public class GameManager : MonoBehaviour {
         {
             case GameFlow.Load:
                 Debug.Log("Load!");
+                FlowLoadState();
                 //TODO: Load
                 break;
             case GameFlow.Menu:
@@ -152,42 +175,68 @@ public class GameManager : MonoBehaviour {
                 UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
 
             resetTimer();
+            FieldManager.I.Init();
+            
+            LocalPlayCnt++;
+            LocalPollen = 0; //init
+
         }
         else
         {
-            Timer -= Time.deltaTime;
+            _timer -= Time.deltaTime;
         }
 
         UiManager.I.UpdateTimerText(Timer);
 
-        if (Timer <= 0) //Time Out!
-        {
-            Timer = 0.0f;
-            UiManager.I.UpdateTimerText(Timer);
-            _flow_next = GameFlow.Save;
-        }
     }
 
-    private float Timer = PLAYTIME;
+    public void TrnsGameToSave() { //transaction
+        _timer = 0.0f;
+        UiManager.I.UpdateTimerText(Timer);
+        _flow_next = GameFlow.Save;
+    }
+
+    private float _timer = PLAYTIME;
+    public float Timer
+    {
+        get { return _timer; }
+    }
+
     void resetTimer()
     {
-        Timer = PLAYTIME;
+        _timer = PLAYTIME;
     }
 
     void FlowSaveState()
     {
         if (isFirstFrame)
         {
-
-            //TODO: Save
-
+            StartCoroutine("_save");
+            LocalPlayCnt++;
+            _flow_next = GameFlow.Menu;
         }
-
-        LocalPlayCnt++;
-       
-        
-        _flow_next = GameFlow.Menu;
-
     }
-    
+
+    IEnumerator _save()
+    {
+        _data.Update(LocalPlayCnt, LocalPollen, LocalFlowers);
+        yield return _data.Write();
+    }
+
+    void FlowLoadState()
+    {
+        if (isFirstFrame)
+        {
+            StartCoroutine("_load");
+        }
+    }
+
+    IEnumerator _load()
+    {
+        yield return _data.Read();
+
+        LocalPlayCnt = 0; //init
+
+        _flow_next = GameFlow.Menu;
+    }
 }

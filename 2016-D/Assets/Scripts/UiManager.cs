@@ -49,7 +49,7 @@ public class UiManager : MonoBehaviour {
         r = Game.transform.FindChild("Handle").FindChild("Point").GetComponent<Image>().sprite.texture.width/2.0f;
 }
 
-public void MenuButtonEvent (Button b)
+    public void MenuButtonEvent (Button b)
     {
         GameManager.I.GetMenuButton(b);
     }
@@ -81,6 +81,11 @@ public void MenuButtonEvent (Button b)
     public void UpdateTimerText(float t)
     {
         Game.transform.FindChild("Time").GetComponent<Text>().text = t.ToString("N2");
+    }
+
+    public void UpdatePollenText(int t)
+    {
+        Game.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
     }
 
     public void LocalFirstPlayMenu(bool b)
