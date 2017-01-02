@@ -14,7 +14,6 @@ public class FieldManager : MonoBehaviour {
     }
 
     [SerializeField]
-    private UnityEngine.Object map;
     public GameObject _maze;
 
     private enum GameEnd { TimeOver, KickedOut, DreamOut, Null }
@@ -22,7 +21,6 @@ public class FieldManager : MonoBehaviour {
 
     
 	private Player _player;
-	private PlayerData _localData;
 
 	void Start () {
 
@@ -36,10 +34,6 @@ public class FieldManager : MonoBehaviour {
             _manager = this;
         }
 
-       
-
-        if (_localData == null)
-            _localData = new PlayerData();
 
     }
 
@@ -48,14 +42,17 @@ public class FieldManager : MonoBehaviour {
 		//TODO: Init field (for after 1st play)
         
 		// Map Generate
-		if (map == null)
+		if (_maze.tag != "Field")
 			return;
+		
+		bool[] arr = GameManager.Data.FieldsData;
 
-		if (_maze != null)
-			return;
-		else
-		//	_maze = Instantiate (map, Vector3.zero, Quaternion.identity) as GameObject;
 
+		for (int i = 0; i < arr.Length; i++) {
+			if (arr [i]) {
+				_maze.transform.FindChild ("field" + i).gameObject.SetActive (true);			
+			}
+		}
 
 		// Player transform.position & local data
 		if ( _player == null )
@@ -64,8 +61,8 @@ public class FieldManager : MonoBehaviour {
 		_player.transform.position = Vector3.zero;
 		_player.transform.rotation = Quaternion.Euler (Vector3.zero);
 
-		_localData.Reset (PlayerData.ResetType.All);
-		UiManager.I.UpdatePollenText (_localData.LocalPlln);
+		GameManager.Data.Reset (PlayerData.ResetType.All);
+		UiManager.I.UpdatePollenText (GameManager.Data.LocalPlln);
 
 		// Pollens Respawn
 
@@ -87,7 +84,7 @@ public class FieldManager : MonoBehaviour {
         {
 
             GameManager.I.TrnsGameToSave();
-            UiManager.I.UpdateResultValue(_localData.LocalPlln);
+			UiManager.I.UpdateResultValue(GameManager.Data.LocalPlln);
 
         }
            
@@ -97,14 +94,14 @@ public class FieldManager : MonoBehaviour {
     public void ObtainPollen(int value)
     {
         Debug.Log(value);
-        _localData.Update(value, PlayerData.UpdateType.LocalPlln);
-        Debug.Log(_localData.LocalPlln);
-        UiManager.I.UpdatePollenText(_localData.LocalPlln);
+		GameManager.Data.Update(value, PlayerData.UpdateType.LocalPlln);
+		Debug.Log(GameManager.Data.LocalPlln);
+		UiManager.I.UpdatePollenText(GameManager.Data.LocalPlln);
     }
 
     public void ObtainFlower(int index, int value)
     {
-        _localData.Update(index, value);
+		GameManager.Data.Update(index, value);
     }
 
     private bool isGameEnd()

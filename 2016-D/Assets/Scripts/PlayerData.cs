@@ -5,6 +5,8 @@ using System.IO;
 
 public class PlayerData {
 
+	private const int FIELDNUM = 5;
+
     private int LocalPlayCount;
     public int LocalPCount
     {
@@ -24,6 +26,11 @@ public class PlayerData {
     public List<string> FlowerIndex;
     private Dictionary<string, int> FlowerDict;
 
+	private bool[] Fields;
+	public bool[] FieldsData {
+		get { return Fields; }
+	}
+
     public PlayerData()
     {
 
@@ -33,6 +40,9 @@ public class PlayerData {
         TotalPlayCount = 0;
         LocalPollen = 0;
         TotalPollen = 0;
+		Fields = new bool[FIELDNUM];
+		Fields [0] = true;
+
 
         FlowerIndex = new List<string>()
         {
@@ -114,6 +124,12 @@ public class PlayerData {
         {
             sw.WriteLine(FlowerDict[FlowerIndex[i]]);
         }
+		sw.WriteLine ("f");
+		for (int i = 0; i < FIELDNUM; i++) {
+			sw.WriteLine (Fields [i]);
+		}
+
+
 
         sw.Close();
         file.Close();
@@ -166,6 +182,20 @@ public class PlayerData {
 
                     }
                     break;
+			case "f":
+				for (int i = 0; i < FIELDNUM; i++) {
+					tmp = sr.ReadLine ();
+					if (tmp != null)
+						Fields [i] = bool.Parse (tmp);
+					else {
+						if (i > 0) 
+							Fields [i] = false;
+						else
+							Fields [i] = true;
+					}
+				}
+					break;
+				
             }
         }
 
