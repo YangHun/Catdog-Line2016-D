@@ -173,16 +173,24 @@ public class PlayerData {
         file.Close();
     }
 
-    public enum UpdateType { PlayCount, Pollen }
+    public enum UpdateType { PlayCount, Pollen, LocalPCount, LocalPlln }
     public bool Update(int l, UpdateType type)
     {
         if (type == UpdateType.PlayCount)
         {
             _update(l, 0, -1, 0);
         }
-        else
+        else if (type == UpdateType.Pollen)
         {
             _update(0, l, -1, 0);
+        }
+        else if (type == UpdateType.LocalPCount)
+        {
+            _updatelocal(l, 0);
+        }
+        else if (type == UpdateType.LocalPlln)
+        {
+            _updatelocal(0, l);
         }
         return true;
     }
@@ -212,6 +220,15 @@ public class PlayerData {
         {
             FlowerDict[FlowerIndex[index]] = value;
         }
+    }
+
+    private void _updatelocal(int lc, int lp)
+    {
+        if (lc > 0)
+            LocalPlayCount += lc;
+
+        if (lp > 0)
+            LocalPollen += lp;
     }
 
     private void _updateall(int lc, int lp, int[] fd)

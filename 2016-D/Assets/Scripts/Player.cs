@@ -78,6 +78,7 @@ public class Player : MonoBehaviour {
 		if (collision.gameObject.tag == "Pollen")
 		{
 			Pollen p = collision.gameObject.GetComponent<Pollen>();
+            Debug.Log(p.Value);
 
 			FieldManager.I.ObtainPollen(p.Value);
 		}

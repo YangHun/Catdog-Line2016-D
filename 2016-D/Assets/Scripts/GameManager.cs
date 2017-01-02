@@ -134,6 +134,7 @@ public class GameManager : MonoBehaviour {
             {
                 UiManager.I.CanvasOn(UiManager.UICanvas.Menu);
                 UiManager.I.LocalFirstPlayMenu(false);
+                UiManager.I.UpdateResultText();
             }
 
         }

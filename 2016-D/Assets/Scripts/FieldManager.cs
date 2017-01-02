@@ -54,12 +54,12 @@ public class FieldManager : MonoBehaviour {
 		if (_maze != null)
 			return;
 		else
-			_maze = Instantiate (map, Vector3.zero, Quaternion.identity) as GameObject;
+		//	_maze = Instantiate (map, Vector3.zero, Quaternion.identity) as GameObject;
 
 
 		// Player transform.position & local data
 		if ( _player == null )
-			_player = GameObject.FindGameObjectWithTag ("Pl	ayer").GetComponent<Player>();
+			_player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player>();
 
 		_player.transform.position = Vector3.zero;
 		_player.transform.rotation = Quaternion.Euler (Vector3.zero);
@@ -85,7 +85,10 @@ public class FieldManager : MonoBehaviour {
 
         if (isGameEnd())
         {
+
             GameManager.I.TrnsGameToSave();
+            UiManager.I.UpdateResultValue(_localData.LocalPlln);
+
         }
            
 
@@ -93,8 +96,8 @@ public class FieldManager : MonoBehaviour {
     
     public void ObtainPollen(int value)
     {
-        Debug.Log(_localData);
-        _localData.Update(value, PlayerData.UpdateType.Pollen);
+        Debug.Log(value);
+        _localData.Update(value, PlayerData.UpdateType.LocalPlln);
         Debug.Log(_localData.LocalPlln);
         UiManager.I.UpdatePollenText(_localData.LocalPlln);
     }

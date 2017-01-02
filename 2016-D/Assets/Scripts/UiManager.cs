@@ -19,7 +19,7 @@ public class UiManager : MonoBehaviour {
 
     public enum UICanvas { Menu, Game };
     private Dictionary<UICanvas, Canvas> CanvasDict;
-    
+
     private float r;
 
     void Start()
@@ -86,6 +86,19 @@ public class UiManager : MonoBehaviour {
     public void UpdatePollenText(int t)
     {
         Game.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
+    }
+
+    private int _result;
+
+    public void UpdateResultValue(int t)
+    {
+        _result = t;
+    }
+
+    public void UpdateResultText()
+    {
+        string _text = "+" + _result.ToString();
+        Menu.transform.FindChild("Result").GetComponent<Text>().text = _text;
     }
 
     public void LocalFirstPlayMenu(bool b)
