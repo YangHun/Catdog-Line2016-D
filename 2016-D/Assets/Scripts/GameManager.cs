@@ -81,6 +81,14 @@ public class GameManager : MonoBehaviour {
 	
 	void Update () {
 
+		if (_flow_next != GameFlow.Null)
+		{
+			_flow_prev = _flow_next;
+			Debug.Log ("Flow_Next : " + _flow_next);
+			_flow_next = GameFlow.Null;
+			isFirstFrame = true;
+		}
+
         switch ( _flow_prev )
         {
             case GameFlow.Load:
@@ -108,17 +116,9 @@ public class GameManager : MonoBehaviour {
     void LateUpdate()
     {
 
-        if (isFirstFrame)
-        {
-            isFirstFrame = !isFirstFrame;
-        }
-
-        if (_flow_next != GameFlow.Null)
-        {
-            _flow_prev = _flow_next;
-            _flow_next = GameFlow.Null;
-            isFirstFrame = true;
-        }
+		if (isFirstFrame) {
+			isFirstFrame = !isFirstFrame;
+		}
     }
 
     void FlowMenuState(int n)
@@ -142,9 +142,11 @@ public class GameManager : MonoBehaviour {
         switch (n)
         {
             case -1: //Default
-                break;
+			Debug.Log("menu-default?");
+				break;
 
             case 0: //Game Start
+			Debug.Log("Menu-start game");
                 //SceneManager.LoadScene(1);
                 _flow_next = GameFlow.Game;
                 break;
@@ -197,32 +199,40 @@ public class GameManager : MonoBehaviour {
         _flow_next = GameFlow.Save;
     }
 
+	[SerializeField]
     private float _timer = PLAYTIME;
     public float Timer
     {
         get { return _timer; }
     }
 
-    void resetTimer()
+    public void resetTimer()
     {
         _timer = PLAYTIME;
     }
 
     void FlowSaveState()
     {
-        if (isFirstFrame)
-        {
-            StartCoroutine("_save");
-            LocalPlayCnt++;
-            _flow_next = GameFlow.Menu;
-        }
-    }
+		if (isFirstFrame) {
 
+			StartCoroutine("_save");
+			LocalPlayCnt++;   
+			TrnsSaveToMenu ();
+		}
+    }
+		
     IEnumerator _save()
     {
         _data.Update(LocalPlayCnt, LocalPollen, LocalFlowers);
-        yield return _data.Write();
-    }
+
+		yield return null;
+		_data.Write ();
+	}
+
+	public void TrnsSaveToMenu() { //transaction
+		_GetMenuButton = -1;
+		_flow_next = GameFlow.Menu;
+	}
 
     void FlowLoadState()
     {

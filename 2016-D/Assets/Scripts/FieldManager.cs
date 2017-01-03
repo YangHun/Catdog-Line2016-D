@@ -14,12 +14,11 @@ public class FieldManager : MonoBehaviour {
     }
 
     [SerializeField]
-    public GameObject _maze;
+    private GameObject _maze;
 
     private enum GameEnd { TimeOver, KickedOut, DreamOut, Null }
     private GameEnd EndType = GameEnd.Null;
 
-    
 	private Player _player;
 
 	void Start () {
@@ -67,11 +66,20 @@ public class FieldManager : MonoBehaviour {
 		// Pollens Respawn
 
 
+
 		// Flowers Random Spawn
+		Field[] _fields = _maze.gameObject.GetComponentsInChildren<Field>(false);
+
+		Debug.Log (_fields.Length);
+
+		for (int i = 0; i < _fields.Length; i++) {
+			if (_fields [i] == true) {
+				_fields [i].GenerateFlower ();
+			}
+		}
 
 
 		// Enomies Respawn
-
 
 
     }
@@ -81,11 +89,10 @@ public class FieldManager : MonoBehaviour {
         //TODO : game end conditions
 
         if (isGameEnd())
-        {
-
-            GameManager.I.TrnsGameToSave();
-			UiManager.I.UpdateResultValue(GameManager.Data.LocalPlln);
-
+		{
+			GameManager.I.TrnsGameToSave ();
+			UiManager.I.UpdateResultValue (GameManager.Data.LocalPlln);
+			GameManager.I.resetTimer ();
         }
            
 
