@@ -67,7 +67,7 @@ public class SpawnPoint : MonoBehaviour {
 			Gizmos.DrawSphere (SpawnPosition[i], 0.3f);
 		}
 	}
-
+		
 	void Start () {
 		
 	}

@@ -19,6 +19,8 @@ public class Flower : MonoBehaviour {
 
 	public Type type;
 
+	private Pollen[] _pollens;
+	private bool[] _activedpollens;
 
 	void Start () {
 		
@@ -44,5 +46,10 @@ public class Flower : MonoBehaviour {
 
 		if (GetComponent<SpriteRenderer> ().material.color.a <= Time.deltaTime)
 			Destroy(this.gameObject);
+	}
+
+	public void RegisterPollens(){
+
+
 	}
 }

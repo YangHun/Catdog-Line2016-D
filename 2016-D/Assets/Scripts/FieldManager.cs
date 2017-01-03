@@ -21,6 +21,9 @@ public class FieldManager : MonoBehaviour {
 
 	private Player _player;
 
+	[SerializeField]
+	private bool[] _spawnfield = new bool[5];
+
 	void Start () {
 
         if( _manager != null)
@@ -44,11 +47,11 @@ public class FieldManager : MonoBehaviour {
 		if (_maze.tag != "Field")
 			return;
 		
-		bool[] arr = GameManager.Data.FieldsData;
 
+		_spawnfield = GameManager.Data.FieldsData;
 
-		for (int i = 0; i < arr.Length; i++) {
-			if (arr [i]) {
+		for (int i = 0; i < _spawnfield.Length; i++) {
+			if (_spawnfield [i]) {
 				_maze.transform.FindChild ("field" + i).gameObject.SetActive (true);			
 			}
 		}
@@ -58,16 +61,14 @@ public class FieldManager : MonoBehaviour {
 			_player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player>();
 
 		_player.transform.position = Vector3.zero;
+		Camera.main.transform.position = new Vector3 (0.0f, 0.0f, -10.0f);
 		_player.transform.rotation = Quaternion.Euler (Vector3.zero);
 
 		GameManager.Data.Reset (PlayerData.ResetType.All);
 		UiManager.I.UpdatePollenText (GameManager.Data.LocalPlln);
 
-		// Pollens Respawn
 
-
-
-		// Flowers Random Spawn
+		// Flowers Random Spawn & Pollens Spawn
 		Field[] _fields = _maze.gameObject.GetComponentsInChildren<Field>(false);
 
 		Debug.Log (_fields.Length);

@@ -5,6 +5,9 @@ using UnityEngine;
 public class Field : MonoBehaviour {
 
 	[SerializeField]
+	private int _fieldnum;
+
+	[SerializeField]
 	private SpawnPoint _sp;
 	public SpawnPoint spawnPoint {
 		get { return _sp; }
@@ -26,13 +29,14 @@ public class Field : MonoBehaviour {
 	};
 
 	private Flower CurrentFlower;
+	private GameObject CurrentPollens;
 
 	// Use this for initialization
 	void Start () {
 
 		if (Flowers == null)
 			return;
-		
+
 		if (_sp == null)
 			_sp = GetComponentInChildren<SpawnPoint> ();
 	}
@@ -44,6 +48,9 @@ public class Field : MonoBehaviour {
 
 	public void GenerateFlower(){
 
+		if (CurrentFlower != null) {
+			flowerpick (CurrentFlower);
+		}
 		_generate ();
 	}
 
@@ -64,9 +71,29 @@ public class Field : MonoBehaviour {
 		 //pick a random flower which player doesn't collect yet
 		Flower.Type r = l[Random.Range (0, num-1)];
 
-		GameObject f= (GameObject)Instantiate (Flowers [FlowerDict [r]], _sp.SpawnPosition [FlowerDict [r] ], Quaternion.identity);
+//		GameObject f= (GameObject)Instantiate (Flowers [FlowerDict [r]], _sp.SpawnPosition [FlowerDict [r] ], Quaternion.identity);
+		GameObject f= (GameObject)Instantiate (Flowers [0], _sp.SpawnPosition [0], Quaternion.identity);
+		f.transform.SetParent (this.gameObject.transform.FindChild("SpawnPoint"));
 
 		CurrentFlower = f.GetComponent<Flower>();
 		CurrentFlower.type = r;
+
+		//UnityEngine.Object _p = Resources.Load ("Prefabs/Pollen/"+_fieldnum.ToString+"-"+ (FlowerDict [r]).ToString);
+		GameObject _p = Resources.Load ("Prefabs/Pollens/1-1", typeof(GameObject)) as GameObject;
+		GameObject p = (GameObject)Instantiate (_p, Vector3.zero, Quaternion.identity);
+		p.transform.SetParent (f.transform);
+
+	}
+
+	private void flowerpick(Flower f){ //Destroy existing object
+
+		if (f != null) {
+
+			if (f.transform.childCount > 0) {
+				f.gameObject.transform.DetachChildren(); //remain pollens
+			}
+			Destroy (f.gameObject);
+
+		}
 	}
 }
