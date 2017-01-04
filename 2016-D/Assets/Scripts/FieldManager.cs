@@ -14,7 +14,16 @@ public class FieldManager : MonoBehaviour {
     }
 
     [SerializeField]
-    private GameObject _maze;
+    private GameObject _maze = null;
+	public GameObject Maze {
+		get { return _maze; }
+	}
+
+	private bool _gamestart = false;
+	private bool _gameend = false;
+	public bool EndGame {
+		get { return _gameend; }
+	}
 
     private enum GameEnd { TimeOver, KickedOut, DreamOut, Null }
     private GameEnd EndType = GameEnd.Null;
@@ -35,16 +44,16 @@ public class FieldManager : MonoBehaviour {
         {
             _manager = this;
         }
-
-
     }
 
     public void Init() //Call When Game Starts
 	{
 		//TODO: Init field (for after 1st play)
         
+
+
 		// Map Generate
-		if (_maze.tag != "Field")
+		if (_maze.tag != "Map")
 			return;
 		
 
@@ -68,20 +77,27 @@ public class FieldManager : MonoBehaviour {
 		UiManager.I.UpdatePollenText (GameManager.Data.LocalPlln);
 
 
+
 		// Flowers Random Spawn & Pollens Spawn
 		Field[] _fields = _maze.gameObject.GetComponentsInChildren<Field>(false);
 
-		Debug.Log (_fields.Length);
-
 		for (int i = 0; i < _fields.Length; i++) {
 			if (_fields [i] == true) {
-				_fields [i].GenerateFlower ();
+
+				FieldSpawningPool.I.SpawnFlower (_fields [i].spawnPoint, i);
 			}
 		}
+	
+
+		// Enemies respawn
+		FieldSpawningPool.I.Init();
 
 
-		// Enomies Respawn
 
+		//Game start!
+		_gameend = false;
+		EndType = GameEnd.Null;
+		_gamestart = true;
 
     }
 
@@ -91,14 +107,53 @@ public class FieldManager : MonoBehaviour {
 
         if (isGameEnd())
 		{
-			GameManager.I.TrnsGameToSave ();
-			UiManager.I.UpdateResultValue (GameManager.Data.LocalPlln);
-			GameManager.I.resetTimer ();
+			_gamestart = false;
+			_gameend = true;
+
+			FieldSpawningPool.I.Kill ();
+			StopTimer ();
+			_player.EndGame();
         }
+
+		if (_gamestart) {
+
+			
+			FieldSpawningPool.I.Spawn ();
+			ActiveTimer();
+		}
            
 
 	}
     
+	private const float PLAYTIME = 30.0f;
+
+	[SerializeField]
+	private float _timer = PLAYTIME;
+	public float Timer
+	{
+		get { return _timer; }
+	}
+		
+	void ActiveTimer(){
+		_timer -= Time.deltaTime;
+		UiManager.I.UpdateTimerText(Timer);
+	}
+
+	void StopTimer(){
+
+		if (_timer < 0.0f)
+			_timer = 0.0f;
+		UiManager.I.UpdateTimerText(Timer);
+
+		_resetTimer ();
+	}
+
+	void _resetTimer()
+	{
+		_timer = PLAYTIME;
+	}
+
+
     public void ObtainPollen(int value)
     {
         Debug.Log(value);
@@ -118,7 +173,7 @@ public class FieldManager : MonoBehaviour {
         // kicked out : collision of the enomy
         // dream out : penalty X
 
-        if (GameManager.I.Timer <= 0)
+        if (_timer <= 0.0f)
         {
             EndType = GameEnd.TimeOver;
             
@@ -126,13 +181,16 @@ public class FieldManager : MonoBehaviour {
         }
         else if (EndType == GameEnd.DreamOut)
         {
-            
+      		
             return true;
         }
-        else if (EndType == GameEnd.KickedOut)
+		else if (_player != null)
         {
-            
-            return true;
+			if (_player.isPlayerKilled == true) {
+				EndType = GameEnd.KickedOut;
+				return true;
+			} else
+				return false;
         }
 
         return false;          

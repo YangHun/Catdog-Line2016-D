@@ -22,7 +22,6 @@ public class Pollen : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-		gameObject.GetComponent<Rigidbody2D> ().isKinematic = true;
         StartCoroutine("FadeOut");
     }
 
@@ -38,7 +37,7 @@ public class Pollen : MonoBehaviour {
             yield return null;
         }
 
-		if (GetComponent<SpriteRenderer> ().material.color.a <= Time.deltaTime)
+		if (GetComponent<SpriteRenderer> ().material.color.a <= Time.deltaTime * 2.0f)
 			Destroy(this.gameObject);
     }
 }

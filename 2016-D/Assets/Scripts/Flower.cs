@@ -26,7 +26,7 @@ public class Flower : MonoBehaviour {
 		
 	}
 
-	private void OnCollisionEnter2D(Collision2D collision)
+	private void OnTriggerEnter2D(Collider2D col)
 	{
 		gameObject.GetComponent<CircleCollider2D>().isTrigger = true;
 		StartCoroutine("FadeOut");

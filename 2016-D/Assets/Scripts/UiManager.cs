@@ -33,6 +33,7 @@ public class UiManager : MonoBehaviour {
         else
         {
             _manager = this;
+			DontDestroyOnLoad (this.gameObject);
         }
 
         //Canvas prefab init

@@ -7,8 +7,9 @@ public class SpawnPoint : MonoBehaviour {
 
 	public Vector3 Position = Vector3.zero;
 
-	public enum Type { Flower, Enomy, Null };
+	public enum Type { Flower, Enemy, Null };
 
+	[SerializeField]
 	private Type _spawn = Type.Null;
 	public Type SpawnType{
 		get { return _spawn; }
@@ -35,36 +36,45 @@ public class SpawnPoint : MonoBehaviour {
 	void OnDrawGizmos(){
 		Color c;
 
-		for (int i = 0; i < SpawnPosition.Count; i++) {
-			Flower.Type t = SpawnFlowers [i];
-			switch (t) {
-			case Flower.Type.Anemone:
-				c = Color.red;
-				break;
-			case Flower.Type.Aster:
-				c = Color.yellow;
-				break;
-			case Flower.Type.Baby_s:
-				c = Color.green;
-				break;
-			case Flower.Type.Kalmia:
-				c = Color.cyan;
-				break;
-			case Flower.Type.Poppy:
-				c = Color.blue;
-				break;
-			case Flower.Type.Snowdrop:
-				c = Color.gray;
-				break;
-			case Flower.Type.Valley:
-				c = Color.magenta;
-				break;
-			case Flower.Type.White_egret:
-				c = Color.white;
-				break;
+		if (_spawn == Type.Enemy) {
+
+			c = Color.red;
+			for (int i = 0; i < SpawnPosition.Count; i++) {
+				Gizmos.DrawSphere (SpawnPosition[i], 1.0f);
 			}
+		} 
+		else {
+			for (int i = 0; i < SpawnPosition.Count; i++) {
+				Flower.Type t = SpawnFlowers [i];
+				switch (t) {
+				case Flower.Type.Anemone:
+					c = Color.red;
+					break;
+				case Flower.Type.Aster:
+					c = Color.yellow;
+					break;
+				case Flower.Type.Baby_s:
+					c = Color.green;
+					break;
+				case Flower.Type.Kalmia:
+					c = Color.cyan;
+					break;
+				case Flower.Type.Poppy:
+					c = Color.blue;
+					break;
+				case Flower.Type.Snowdrop:
+					c = Color.gray;
+					break;
+				case Flower.Type.Valley:
+					c = Color.magenta;
+					break;
+				case Flower.Type.White_egret:
+					c = Color.white;
+					break;
+				}
 				
-			Gizmos.DrawSphere (SpawnPosition[i], 0.3f);
+				Gizmos.DrawSphere (SpawnPosition [i], 0.3f);
+			}
 		}
 	}
 		

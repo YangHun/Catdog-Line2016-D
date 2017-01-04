@@ -12,6 +12,11 @@ public class Player : MonoBehaviour {
 	private Vector3 Dir;
 	private Vector3 rotAngle;
 
+	private bool _killed = false;
+	public bool isPlayerKilled{
+		get { return _killed; }
+	}
+
 	void Start()
 	{
 		//init
@@ -32,6 +37,11 @@ public class Player : MonoBehaviour {
 	}
 
 	private bool isActive = false;
+
+	public void EndGame(){
+		_killed = false;	
+	}
+
 
 	void GetHandle()
 	{
@@ -73,15 +83,20 @@ public class Player : MonoBehaviour {
 		transform.rotation = Quaternion.Euler(rotAngle);
 	}
 
-	private void OnCollisionEnter2D(Collision2D collision)
+	private void OnTriggerEnter2D(Collider2D col)
 	{
-		if (collision.gameObject.tag == "Pollen")
-		{
-			Pollen p = collision.gameObject.GetComponent<Pollen>();
-            Debug.Log(p.Value);
+		if (col.gameObject.tag == "Pollen") {
+			Pollen p = col.gameObject.GetComponent<Pollen> ();
+			Debug.Log (p.Value);
 
-			FieldManager.I.ObtainPollen(p.Value);
+			FieldManager.I.ObtainPollen (p.Value);
 		}
+
 	}
 
+	private void OnCollisionEnter2D(Collision2D col){
+		if (col.gameObject.tag == "Enemy") {
+			_killed = true;
+		}
+	}
 }

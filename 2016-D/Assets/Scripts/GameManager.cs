@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour {
     private int LocalPollen = 0;
     private int[] LocalFlowers;
 
-    public enum GameFlow { Load, Menu, Game, Save, Null };
+    public enum GameFlow { Load, Menu, Tutorial, Game, Save, Null };
     private GameFlow _flow_prev = GameFlow.Load;
     private GameFlow _flow_next = GameFlow.Null;
 
@@ -65,6 +65,7 @@ public class GameManager : MonoBehaviour {
         else
         {
             _manager = this;
+			DontDestroyOnLoad (this.gameObject.transform.parent.gameObject);
         }
 
         if (_data != null){
@@ -91,23 +92,28 @@ public class GameManager : MonoBehaviour {
 
         switch ( _flow_prev )
         {
-            case GameFlow.Load:
-                Debug.Log("Load!");
-                FlowLoadState();
-                //TODO: Load
-                break;
-            case GameFlow.Menu:
-                Debug.Log("Menu!");
-                FlowMenuState(_GetMenuButton);
-                break;
-            case GameFlow.Game:
-                Debug.Log("Game!");
-                FlowGameState();
-                break;
-            case GameFlow.Save:
-                Debug.Log("Save!");
-                FlowSaveState();
-                break;
+        case GameFlow.Load:
+            Debug.Log("Load!");
+            FlowLoadState();
+            break;
+		case GameFlow.Tutorial:
+			Debug.Log ("Tutorial!");
+			//TODO: Tutorial
+			FlowTutorialState();
+			break;
+
+        case GameFlow.Menu:
+            Debug.Log("Menu!");
+            FlowMenuState(_GetMenuButton);
+            break;
+        case GameFlow.Game:
+            Debug.Log("Game!");
+            FlowGameState();
+            break;
+        case GameFlow.Save:
+            Debug.Log("Save!");
+            FlowSaveState();
+            break;
         }
         
 
@@ -120,6 +126,19 @@ public class GameManager : MonoBehaviour {
 			isFirstFrame = !isFirstFrame;
 		}
     }
+
+	void FlowTutorialState(){
+		if (isFirstFrame) {
+			SceneManager.LoadScene (2);
+
+		} else {
+
+		//	if(Application.loadedLevel != 1)
+			if(SceneManager.GetActiveScene != SceneManager.GetSceneAt(1))
+			SceneManager.LoadScene (1);
+
+		}
+	}	
 
     void FlowMenuState(int n)
     {
@@ -177,7 +196,7 @@ public class GameManager : MonoBehaviour {
             else
                 UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
 
-            resetTimer();
+          //  resetTimer();
             FieldManager.I.Init();
             
             LocalPlayCnt++;
@@ -186,30 +205,14 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            _timer -= Time.deltaTime;
+			if (FieldManager.I.EndGame == true) {
+				_flow_next = GameFlow.Save;
+				UiManager.I.UpdateResultValue (GameManager.Data.LocalPlln);
+			}
         }
-
-        UiManager.I.UpdateTimerText(Timer);
-
     }
 
-    public void TrnsGameToSave() { //transaction
-        _timer = 0.0f;
-        UiManager.I.UpdateTimerText(Timer);
-        _flow_next = GameFlow.Save;
-    }
 
-	[SerializeField]
-    private float _timer = PLAYTIME;
-    public float Timer
-    {
-        get { return _timer; }
-    }
-
-    public void resetTimer()
-    {
-        _timer = PLAYTIME;
-    }
 
     void FlowSaveState()
     {
@@ -217,7 +220,8 @@ public class GameManager : MonoBehaviour {
 
 			StartCoroutine("_save");
 			LocalPlayCnt++;   
-			TrnsSaveToMenu ();
+			_GetMenuButton = -1;
+			_flow_next = GameFlow.Menu;
 		}
     }
 		
@@ -227,11 +231,6 @@ public class GameManager : MonoBehaviour {
 
 		yield return null;
 		_data.Write ();
-	}
-
-	public void TrnsSaveToMenu() { //transaction
-		_GetMenuButton = -1;
-		_flow_next = GameFlow.Menu;
 	}
 
     void FlowLoadState()
@@ -248,6 +247,10 @@ public class GameManager : MonoBehaviour {
 
         LocalPlayCnt = 0; //init
 
-        _flow_next = GameFlow.Menu;
+
+
+        //_flow_next = GameFlow.Menu;
+		_flow_next = GameFlow.Tutorial;
+
     }
 }

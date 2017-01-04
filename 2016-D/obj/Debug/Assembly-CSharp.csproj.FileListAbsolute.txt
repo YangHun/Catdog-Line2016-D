@@ -27,7 +27,3 @@ C:\Users\Hun\Documents\Catdog-Line2016-D\2016-D\Temp\bin\Debug\UnityEngine.VR.xm
 C:\Users\Hun\Documents\Catdog-Line2016-D\2016-D\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 C:\Users\Hun\Documents\Catdog-Line2016-D\2016-D\obj\Debug\Assembly-CSharp.dll
 C:\Users\Hun\Documents\Catdog-Line2016-D\2016-D\obj\Debug\Assembly-CSharp.pdb
-C:\Users\Hun\Documents\Catdog-Line2016-D\2016-D\Temp\bin\Debug\UnityEngine.Advertisements.dll
-C:\Users\Hun\Documents\Catdog-Line2016-D\2016-D\Temp\bin\Debug\UnityEngine.Purchasing.dll
-C:\Users\Hun\Documents\Catdog-Line2016-D\2016-D\Temp\bin\Debug\UnityEngine.Advertisements.xml
-C:\Users\Hun\Documents\Catdog-Line2016-D\2016-D\Temp\bin\Debug\UnityEngine.Purchasing.xml
