@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class UiManager : MonoBehaviour {
 
     static Canvas Menu;
-    static Canvas Game;
+	static Canvas Game;
+	static Canvas Story;
 
     private static UiManager _manager = null;
     public static UiManager I
@@ -17,7 +18,7 @@ public class UiManager : MonoBehaviour {
         }
     }
 
-    public enum UICanvas { Menu, Game };
+    public enum UICanvas { Menu, Game, Story };
     private Dictionary<UICanvas, Canvas> CanvasDict;
 
     private float r;
@@ -39,16 +40,18 @@ public class UiManager : MonoBehaviour {
         //Canvas prefab init
         Menu = GameObject.Find("Menu UI").GetComponent<Canvas>();
         Game = GameObject.Find("Game UI").GetComponent<Canvas>();
-        
+		Story = GameObject.Find("Story UI").GetComponent<Canvas>();
+
         CanvasDict = new Dictionary<UICanvas, Canvas>()
         {
             { UICanvas.Menu, Menu },
             { UICanvas.Game, Game },
+			{ UICanvas.Story, Story }
         };
 
 
         r = Game.transform.FindChild("Handle").FindChild("Point").GetComponent<Image>().sprite.texture.width/2.0f;
-}
+	}
 
     public void MenuButtonEvent (Button b)
     {
@@ -78,6 +81,12 @@ public class UiManager : MonoBehaviour {
         Canvas _canvas = CanvasDict[cvs];
         _canvas.gameObject.SetActive(false);
     }
+
+	public void ChangeStorySentence(string t, string p){
+
+		Story.transform.FindChild (p).GetComponent<Text> ().text = t;	
+	}
+
 
     public void UpdateTimerText(float t)
     {
