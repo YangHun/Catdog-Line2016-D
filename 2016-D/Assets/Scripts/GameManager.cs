@@ -131,13 +131,7 @@ public class GameManager : MonoBehaviour {
 		if (isFirstFrame) {
 			SceneManager.LoadScene (2);
 
-		} else {
-
-		//	if(Application.loadedLevel != 1)
-			if(SceneManager.GetActiveScene != SceneManager.GetSceneAt(1))
-			SceneManager.LoadScene (1);
-
-		}
+		} 
 	}	
 
     void FlowMenuState(int n)
