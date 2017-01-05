@@ -24,8 +24,8 @@ public class GameManager : MonoBehaviour {
     private int LocalPollen = 0;
     private int[] LocalFlowers;
 
-    public enum GameFlow { Load, Menu, Tutorial, Game, Save, Null };
-    private GameFlow _flow_prev = GameFlow.Load;
+    public enum GameFlow { Load, Menu, Story, Tutorial, Game, Save, Null };
+    private GameFlow _flow_prev = GameFlow.Story;
     private GameFlow _flow_next = GameFlow.Null;
 
     public GameFlow CurrentState
@@ -96,6 +96,10 @@ public class GameManager : MonoBehaviour {
             Debug.Log("Load!");
             FlowLoadState();
             break;
+		case GameFlow.Story:
+			Debug.Log ("Story!");
+			FlowStoryState ();
+			break;
 		case GameFlow.Tutorial:
 			Debug.Log ("Tutorial!");
 			//TODO: Tutorial
@@ -129,10 +133,23 @@ public class GameManager : MonoBehaviour {
 
 	void FlowTutorialState(){
 		if (isFirstFrame) {
-			SceneManager.LoadScene (2);
-
+	
 		} 
 	}	
+		
+	StoryTeller _teller;
+
+	void FlowStoryState(){
+
+		if (isFirstFrame) {
+			_teller = GameObject.Find ("Story UI").GetComponent<StoryTeller> ();
+			UiManager.I.CanvasOff (UiManager.UICanvas.Game);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Menu);
+		}
+
+		_teller.StoryTelling ();
+	
+	}
 
     void FlowMenuState(int n)
     {

@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<Uniset xmlns:xsl="http://www.w3.org/2001/XMLSchema-instance">
+	<Talk>
+		<type>Speak</type>
+		<Name>Catcher</Name>
+		<Sentence>내가 깨워줄게.</Sentence>
+		<index>0</index>
+	</Talk>
+
+	<Talk>
+		<type>Speak</type>
+		<Name>I</Name>
+		<Sentence>...정말?</Sentence>
+		<index>1</index>
+	</Talk>
+
+	<Talk>
+		<type>Speak</type>
+		<Name>Catcher</Name>
+		<Sentence>날 도와주면.</Sentence>
+		<index>2</index>
+	</Talk>
+
+	<Talk>
+		<type>Question</type>
+		<Name>Catcher</Name>
+		<Sentence>어때?</Sentence>
+		<index>3</index>
+	</Talk>
+
+	<Talk>
+		<type>Answer</type>
+		<Name>I</Name>
+		<Sentence>그래.</Sentence>
+		<index>4</index>
+	</Talk>
+
+	<Talk>
+		<type>Speak</type>
+		<Name>Catcher</Name>
+		<Sentence>좋아, I. 난 Catcher.</Sentence>
+		<index>5</index>
+	</Talk>
+
+	<Talk>
+		<type>Speak_End</type>
+		<Name>Catcher</Name>
+		<Sentence>우린 가까운 사이가 될 거야.</Sentence>
+		<index>6</index>
+	</Talk>
+
+	<Talk>
+		<type>Answer</type>
+		<Name>I</Name>
+		<Sentence>...</Sentence>
+		<index>7</index>
+	</Talk>
+
+	<Talk>
+		<type>Speak</type>
+		<Name>Catcher</Name>
+		<Sentence>나만이 D를 깨울 수 있어.</Sentence>
+		<index>8</index>
+	</Talk>
+
+	<Talk>
+		<type>Question</type>
+		<Name>Catcher</Name>
+		<Sentence>날 도와줘, 나도 널 도울게.</Sentence>
+		<index>9</index>
+	</Talk>
+
+	<Talk>
+		<type>Answer</type>
+		<Name>I</Name>
+		<Sentence>......</Sentence>
+		<index>10</index>
+	</Talk>
+
+	<Talk>
+		<type>Speak_End</type>
+		<Name>Catcher</Name>
+		<Sentence>...생각할 시간을 줄게. 너무 늦진 마.</Sentence>
+		<index>11</index>
+	</Talk>
+
+</Uniset>
+
