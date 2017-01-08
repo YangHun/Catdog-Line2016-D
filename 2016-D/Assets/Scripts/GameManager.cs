@@ -131,11 +131,6 @@ public class GameManager : MonoBehaviour {
 		}
     }
 
-	void FlowTutorialState(){
-		if (isFirstFrame) {
-	
-		} 
-	}	
 		
 	StoryTeller _teller;
 
@@ -145,11 +140,25 @@ public class GameManager : MonoBehaviour {
 			_teller = GameObject.Find ("Story UI").GetComponent<StoryTeller> ();
 			UiManager.I.CanvasOff (UiManager.UICanvas.Game);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Menu);
+			_teller.StartStory ();
+
+		}	
+
+
+		if (_teller.isStoryEnd) {
+			UiManager.I.CanvasOff (UiManager.UICanvas.Story);
+			_flow_next = GameFlow.Tutorial;
+		}
+	}
+
+	void FlowTutorialState(){
+		if (isFirstFrame) {
+			
 		}
 
-		_teller.StoryTelling ();
-	
-	}
+		UiManager.I.CanvasOn (UiManager.UICanvas.Menu);
+		_flow_next = GameFlow.Menu;
+	}	
 
     void FlowMenuState(int n)
     {
