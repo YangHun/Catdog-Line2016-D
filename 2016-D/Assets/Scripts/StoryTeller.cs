@@ -18,106 +18,219 @@ public class StoryTeller : MonoBehaviour {
 
 	void Update () {
 
-		ActiveTimer ();
+		if (_start) {
 
+			StoryTelling ();
+
+			ActiveTimer ();
+		}
+	}
+	void LateUpdate(){
+		if (next_s != -2) {
+		
+			prev_s = next_s;
+			next_s = -2;
+			_timer += SPEAKTIME;
+		}
 	}
 
 	[SerializeField]
-	private float _timer = SPEAKTIME;
+	private float _timer = 0;
 	[SerializeField]
 	private float _wait = WAITTIME;
 	private const float SPEAKTIME = 5.0f;
 	private const float WAITTIME = 10.0f;
 
-	int cursor = 0;
+	[SerializeField]
+	int cursor = -1;
 
-	bool isFirstReject = true;
-	bool isTimeRunning = true;
+	private string n;
+	private string _speaker;
+	private string _text;
+
+	[SerializeField]
+	private int prev_s = -2;
+	[SerializeField]
+	private int next_s = -2;
+	private bool _start = false;
+
+	public void StartStory(){
+		_start = true;
+	}
+	private void StopStory(){
+		_start = false;
+	}
+	private void EndStory(){
+		_start = false;
+		_timer = 0;
+	}
+
+	public bool isStoryEnd{
+		get { return !_start; }
+	}
 
 	public void StoryTelling(){
 
-		if ( _timer <= 0) {
+		switch (prev_s) {
 
-			Debug.Log (nodes);
-			Debug.Log (nodes [cursor]);
-			Debug.Log (nodes [cursor].SelectSingleNode("type"));
-			Debug.Log (nodes [cursor].SelectSingleNode("type").InnerText);
-
-			string n = nodes [cursor].SelectSingleNode("type").InnerText;
-			string _speaker;
-			string _text;
-
-
-			cursor++;
-			_speaker = nodes[cursor].SelectSingleNode ("Name").InnerText;
-			_text = nodes[cursor].SelectSingleNode ("Sentence").InnerText;
-
-			if (n == "Speak") {
+		case -1:
+			if (_timer <= 0) {
+				Debug.Log ("start!");
+				cursor = 0;
+				_timer = 0;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
 
 				UiManager.I.ChangeStorySentence (_text, _speaker);
-				ResetTimer ();
-
+				next_s = 0;
 			}
-			else if (n == "Question") {
+			break;
+
+		case 0:
+			
+			if (_timer <= 0) {
+				cursor = 1;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
 
 				UiManager.I.ChangeStorySentence (_text, _speaker);
-
-				ActiveWaitTimer ();
-
-				if(_wait <= 0.0f){
-
-					if (isFirstReject) {
-
-						cursor = 7 - 1;
-						isFirstReject = false;
-					}
-					else {
-						cursor = 10 - 1;
-					}
-
-
-					ResetTimer ();
-					ResetWaitTimer ();
-				}
-
-				else if (Input.GetMouseButtonDown(0)) {
-					cursor = 5 - 1;
-
-					ResetTimer ();
-					ResetWaitTimer ();
-				}
-
+				next_s = 1;
 			}
-
-			 else if (n == "Answer") {
+			break;
+		case 1:
+			if (_timer <= 0) {
+				cursor = 2;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
 
 				UiManager.I.ChangeStorySentence (_text, _speaker);
-				// optional scripting
-
-				ResetTimer ();
+				next_s = 2;
 			}
+			break;
+		case 2: 
+			if (_timer <= 0) {
+				cursor = 3;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
 
-			else if (n == "Speak_End"){
+				_timer = SPEAKTIME;
 				UiManager.I.ChangeStorySentence (_text, _speaker);
-
-
+				next_s = 3;
 			}
+			break;
+		case 3: //Question
+			if (Input.GetMouseButtonDown (0)) {
+				cursor = 4;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
+				_timer = 0;
+				UiManager.I.ChangeStorySentence (_text, _speaker);
+				next_s = 4;
+			}
+
+			else if (_timer <= 0) {
+				cursor = 7;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
+
+				UiManager.I.ChangeStorySentence (_text, _speaker);
+				next_s = 7;
+			}
+			break;
+		
+		case 4:
+			if (_timer <= 0) {
+				cursor = 5;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
+
+				UiManager.I.ChangeStorySentence (_text, _speaker);
+				next_s = 5;
+			}
+			break;
+		case 5:
+			if (_timer <= 0) {
+				cursor = 6;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
+
+				UiManager.I.ChangeStorySentence (_text, _speaker);
+				next_s = 6;
+			}
+			break;
+
+		case 6: //Speak_End
+			if (_timer <= 0) {
+				EndStory ();
+			}
+			break;
+
+		case 7:
+			if (_timer <= 0) {
+				cursor = 8;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
+
+				UiManager.I.ChangeStorySentence (_text, _speaker);
+				next_s = 8;
+			}
+			break;
+		case 8:
+			if (_timer <= 0) {
+				cursor = 9;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
+				_timer = SPEAKTIME;
+				UiManager.I.ChangeStorySentence (_text, _speaker);
+				next_s = 9;
+			}
+			break;
+
+		case 9: //Question
+			if (Input.GetMouseButtonDown (0)) {
+				cursor = 4;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
+				_timer = 0;
+				UiManager.I.ChangeStorySentence (_text, _speaker);
+				next_s = 4;
+			}
+
+			else if (_timer <= 0) {
+				cursor = 10;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
+
+				UiManager.I.ChangeStorySentence (_text, _speaker);
+				next_s = 10;
+			}
+			break;
+		case 10:
+			if (_timer <= 0) {
+				cursor = 11;
+				_speaker = nodes [cursor].SelectSingleNode ("Name").InnerText;
+				_text = nodes [cursor].SelectSingleNode ("Sentence").InnerText;
+
+				UiManager.I.ChangeStorySentence (_text, _speaker);
+				next_s = 11;
+			}
+			break;
+		case 11: //Speak_End
+			if (_timer <= 0) {
+				EndStory ();
+			}
+			break;
 
 		}
 
 	}
-
 	void ActiveTimer(){
-		if (_timer >= 0)
+		if (_timer >= 0) {
 			_timer -= Time.deltaTime;
+		}
 		else {
 			_timer = 0.0f;
 		}
-	}
-
-	void ResetTimer(){
-
-		_timer = SPEAKTIME;
 	}
 
 	void ActiveWaitTimer(){
