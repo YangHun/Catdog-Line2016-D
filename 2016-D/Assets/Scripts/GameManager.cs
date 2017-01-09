@@ -25,8 +25,8 @@ public class GameManager : MonoBehaviour {
     private int[] LocalFlowers;
 
     public enum GameFlow { Load, Menu, Story, Tutorial, Game, Save, Unlock, Null };
-	private GameFlow _flow_prev = GameFlow.Menu;
-    private GameFlow _flow_next = GameFlow.Null;
+	private GameFlow _flow_prev;
+    private GameFlow _flow_next;
 
     public GameFlow CurrentState
     {
@@ -77,6 +77,9 @@ public class GameManager : MonoBehaviour {
         }
 
         LocalFlowers = new int[_data.FlowerIndex.Count];
+
+        _flow_prev = GameFlow.Load;
+        _flow_next = GameFlow.Null;
 
     }
 	
@@ -151,17 +154,20 @@ public class GameManager : MonoBehaviour {
 
 		if (_teller.isStoryEnd) {
 			UiManager.I.CanvasOff (UiManager.UICanvas.Story);
-			_flow_next = GameFlow.Tutorial;
+            _data.StoryModeOff();
+            _data.TutorialModeOn();
+            _data.Write();
+            _flow_next = GameFlow.Tutorial;
 		}
 	}
 
 	void FlowTutorialState(){
 		if (isFirstFrame) {
-			
+            TutorialManager.I.Init();
 		}
 
-		UiManager.I.CanvasOn (UiManager.UICanvas.Menu);
-		_flow_next = GameFlow.Menu;
+		//UiManager.I.CanvasOn (UiManager.UICanvas.Menu);
+		//_flow_next = GameFlow.Menu;
 	}	
 
     void FlowMenuState(int n)
@@ -281,10 +287,22 @@ public class GameManager : MonoBehaviour {
 
         LocalPlayCnt = 0; //init
 
+        if (_data.StoryMode)
+        {
+            if (_data.TutorialMode)
+            {
+                _flow_next = GameFlow.Tutorial;
+            }
 
+            else
+            {
+                _flow_next = GameFlow.Story;
+            }
 
-        //_flow_next = GameFlow.Menu;
-		_flow_next = GameFlow.Tutorial;
-
+        }
+        else 
+        {
+            _flow_next = GameFlow.Menu;
+        }
     }
 }

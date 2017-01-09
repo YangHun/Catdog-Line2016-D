@@ -7,6 +7,18 @@ public class PlayerData {
 
 	private const int FIELDNUM = 5;
 
+    private bool _storyon = true;
+    public bool StoryMode
+    {
+        get { return _storyon; }
+    }
+
+    private bool _tutorial = false;
+    public bool TutorialMode
+    {
+        get { return _tutorial; }
+    }
+
     private int LocalPlayCount;
     public int LocalPCount
     {
@@ -103,18 +115,22 @@ public class PlayerData {
 
         StreamWriter sw = new StreamWriter(file);
 
-/*
-        TotalPlayCount = 1000;
-        TotalPollen = 1200;
+        /*
+                TotalPlayCount = 1000;
+                TotalPollen = 1200;
 
-        for (int i = 0; i < FlowerDict.Count; i++)
-        {
-            FlowerDict[FlowerIndex[i]] = 2 * i + 1;
-        }
+                for (int i = 0; i < FlowerDict.Count; i++)
+                {
+                    FlowerDict[FlowerIndex[i]] = 2 * i + 1;
+                }
 
-    */
+            */
 
         //TODO : Write
+        sw.WriteLine("s");
+        sw.WriteLine(_storyon);
+        sw.WriteLine("t");
+        sw.WriteLine(_tutorial);
         sw.WriteLine("tc");
         sw.WriteLine(TotalPlayCount);
         sw.WriteLine("tp");
@@ -161,8 +177,18 @@ public class PlayerData {
 
             switch (str)
             {
-                case "tc":
+                case "s":
                     string tmp = sr.ReadLine();
+                    _storyon = bool.Parse(tmp);
+                    Debug.Log("StoryMode : " + _storyon);
+                    break;
+                case "t":
+                    tmp = sr.ReadLine();
+                    _tutorial = bool.Parse(tmp);
+                    Debug.Log("TutorialMode : " + _tutorial);
+                    break;
+                case "tc":
+                    tmp = sr.ReadLine();
                     LocalPlayCount = int.Parse(tmp);
                     Debug.Log("LocalPlayCount : " + LocalPlayCount);
                     break;
@@ -201,6 +227,26 @@ public class PlayerData {
 
         sr.Close();
         file.Close();
+    }
+
+    public void StoryModeOff(){
+
+        _storyon = false;
+        
+    }
+
+    public void TutorialModeOff()
+    {
+
+        _storyon = false;
+
+    }
+
+    public void TutorialModeOn()
+    {
+
+        _storyon = true;
+
     }
 
     public enum UpdateType { PlayCount, Pollen, LocalPCount, LocalPlln }
