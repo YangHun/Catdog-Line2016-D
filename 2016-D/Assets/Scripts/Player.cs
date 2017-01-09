@@ -29,11 +29,14 @@ public class Player : MonoBehaviour {
 	void Update () {
 
 
-		if (GameManager.I.CurrentState == GameManager.GameFlow.Game)
+		if (GameManager.I.CurrentState == GameManager.GameFlow.Game ||
+            GameManager.I.CurrentState == GameManager.GameFlow.Tutorial)
 		{
 			GetHandle();
 			UiManager.I.SetHandle(Point, Dir);
 		}
+
+
 	}
 
 	private bool isActive = false;
@@ -91,12 +94,26 @@ public class Player : MonoBehaviour {
 
 			FieldManager.I.ObtainPollen (p.Value);
 		}
+        else if (col.gameObject.tag == "Flower")
+        {
 
-	}
+            Flower t = col.gameObject.GetComponent<Flower>();
+
+            if (GameManager.I.CurrentState == GameManager.GameFlow.Tutorial)
+            {
+
+                TutorialManager.I.ObtainFlower(t.type);
+            }
+        }
+    }
 
 	private void OnCollisionEnter2D(Collision2D col){
+
+
 		if (col.gameObject.tag == "Enemy") {
 			_killed = true;
 		}
+
+        
 	}
 }
