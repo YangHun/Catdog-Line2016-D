@@ -8,6 +8,7 @@ public class UiManager : MonoBehaviour {
     static Canvas Menu;
 	static Canvas Game;
 	static Canvas Story;
+	static Canvas Unlock;
 
     private static UiManager _manager = null;
     public static UiManager I
@@ -18,7 +19,7 @@ public class UiManager : MonoBehaviour {
         }
     }
 
-    public enum UICanvas { Menu, Game, Story };
+    public enum UICanvas { Menu, Game, Story, Unlock };
     private Dictionary<UICanvas, Canvas> CanvasDict;
 
     private float r;
@@ -41,12 +42,14 @@ public class UiManager : MonoBehaviour {
         Menu = GameObject.Find("Menu UI").GetComponent<Canvas>();
         Game = GameObject.Find("Game UI").GetComponent<Canvas>();
 		Story = GameObject.Find("Story UI").GetComponent<Canvas>();
+		Unlock = GameObject.Find("Unlock UI").GetComponent<Canvas>();
 
         CanvasDict = new Dictionary<UICanvas, Canvas>()
         {
             { UICanvas.Menu, Menu },
             { UICanvas.Game, Game },
-			{ UICanvas.Story, Story }
+			{ UICanvas.Story, Story },
+			{ UICanvas.Unlock, Unlock }
         };
 
 

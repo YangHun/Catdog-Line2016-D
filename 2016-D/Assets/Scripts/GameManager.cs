@@ -24,8 +24,8 @@ public class GameManager : MonoBehaviour {
     private int LocalPollen = 0;
     private int[] LocalFlowers;
 
-    public enum GameFlow { Load, Menu, Story, Tutorial, Game, Save, Null };
-    private GameFlow _flow_prev = GameFlow.Story;
+    public enum GameFlow { Load, Menu, Story, Tutorial, Game, Save, Unlock, Null };
+	private GameFlow _flow_prev = GameFlow.Menu;
     private GameFlow _flow_next = GameFlow.Null;
 
     public GameFlow CurrentState
@@ -110,6 +110,10 @@ public class GameManager : MonoBehaviour {
             Debug.Log("Menu!");
             FlowMenuState(_GetMenuButton);
             break;
+		case GameFlow.Unlock:
+			Debug.Log ("Unlock!");
+
+			break;
         case GameFlow.Game:
             Debug.Log("Game!");
             FlowGameState();
@@ -190,18 +194,28 @@ public class GameManager : MonoBehaviour {
                 _flow_next = GameFlow.Game;
                 break;
             case 1: //TODO:Unlock Stage UI
-                Debug.Log("Unlock Stage");
+				TrnsMenuToUnlock();
                 break;
         }
         
     }
-  
+
     private int _GetMenuButton = -1;
     public void GetMenuButton(Button b)
     {
         _GetMenuButton = MenuButtonDict[b.name];
 
     }
+
+	void TrnsMenuToUnlock(){
+		UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Unlock);
+		_flow_next = GameFlow.Unlock;
+	}
+
+	void FlowUnlockState() {
+		if (isFirstFrame) {
+		}
+	}	
 
     void FlowGameState()
     {
