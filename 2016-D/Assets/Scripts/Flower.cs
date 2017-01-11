@@ -18,18 +18,16 @@ public class Flower : MonoBehaviour {
 	}
 
 	public Type type;
-
-	private Pollen[] _pollens;
-	private bool[] _activedpollens;
-
-	void Start () {
 		
-	}
+	private bool startfade = false;
 
 	private void OnTriggerEnter2D(Collider2D col)
 	{
-		gameObject.GetComponent<CircleCollider2D>().isTrigger = true;
-		StartCoroutine("FadeOut");
+
+		if (col.gameObject.tag == "Player" && !startfade) {
+			StartCoroutine ("FadeOut");
+			startfade = true;
+		}
 	}
 
 	IEnumerator FadeOut()
@@ -44,12 +42,8 @@ public class Flower : MonoBehaviour {
 			yield return null;
 		}
 
-		if (GetComponent<SpriteRenderer> ().material.color.a <= Time.deltaTime)
+		if (GetComponent<SpriteRenderer> ().material.color.a <= Time.deltaTime * 2f)
 			Destroy(this.gameObject);
 	}
 
-	public void RegisterPollens(){
-
-
-	}
 }

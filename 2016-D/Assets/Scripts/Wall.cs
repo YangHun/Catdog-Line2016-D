@@ -36,6 +36,10 @@ public class Wall : MonoBehaviour {
             Color c = r.material.color;
             c.a = i / FADETIME;
             r.material.color = c;
+
+			for (int j = 0; j < transform.childCount; j++) {
+				transform.GetChild (j).GetComponent<SpriteRenderer> ().material.color = c;
+			}
             yield return null;
         }
 

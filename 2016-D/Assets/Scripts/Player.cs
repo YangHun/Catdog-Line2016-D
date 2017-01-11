@@ -29,13 +29,16 @@ public class Player : MonoBehaviour {
 	void Update () {
 
 
-		if (GameManager.I.CurrentState == GameManager.GameFlow.Game ||
-            GameManager.I.CurrentState == GameManager.GameFlow.Tutorial)
+		if (GameManager.I.CurrentState == GameManager.GameFlow.Game)
 		{
 			GetHandle();
-			UiManager.I.SetHandle(Point, Dir);
+			UiManager.I.SetHandle(Point, Dir,UiManager.UICanvas.Game);
 		}
-
+		else if (GameManager.I.CurrentState == GameManager.GameFlow.Tutorial)
+		{
+			GetHandle();
+			UiManager.I.SetHandle(Point, Dir,UiManager.UICanvas.Tutorial);
+		}
 
 	}
 
@@ -97,12 +100,12 @@ public class Player : MonoBehaviour {
         else if (col.gameObject.tag == "Flower")
         {
 
-            Flower t = col.gameObject.GetComponent<Flower>();
+            GameObject t = col.gameObject;
 
             if (GameManager.I.CurrentState == GameManager.GameFlow.Tutorial)
             {
 
-                TutorialManager.I.ObtainFlower(t.type);
+                TutorialManager.I.ObtainFlower(t);
             }
         }
     }
