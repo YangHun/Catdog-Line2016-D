@@ -8,6 +8,7 @@ public class UiManager : MonoBehaviour {
     static Canvas Menu;
 	static Canvas Game;
 	static Canvas Story;
+	static Canvas Tutorial;
 	static Canvas Unlock;
 
     private static UiManager _manager = null;
@@ -19,7 +20,7 @@ public class UiManager : MonoBehaviour {
         }
     }
 
-    public enum UICanvas { Menu, Game, Story, Unlock };
+    public enum UICanvas { Menu, Game, Story, Tutorial, Unlock };
     private Dictionary<UICanvas, Canvas> CanvasDict;
 
     private float r;
@@ -42,6 +43,7 @@ public class UiManager : MonoBehaviour {
         Menu = GameObject.Find("Menu UI").GetComponent<Canvas>();
         Game = GameObject.Find("Game UI").GetComponent<Canvas>();
 		Story = GameObject.Find("Story UI").GetComponent<Canvas>();
+		Tutorial = GameObject.Find("Tutorial UI").GetComponent<Canvas>();
 		Unlock = GameObject.Find("Unlock UI").GetComponent<Canvas>();
 
         CanvasDict = new Dictionary<UICanvas, Canvas>()
@@ -49,7 +51,8 @@ public class UiManager : MonoBehaviour {
             { UICanvas.Menu, Menu },
             { UICanvas.Game, Game },
 			{ UICanvas.Story, Story },
-			{ UICanvas.Unlock, Unlock }
+			{ UICanvas.Unlock, Unlock },
+			{ UICanvas.Tutorial, Tutorial }
         };
 
 
@@ -122,19 +125,25 @@ public class UiManager : MonoBehaviour {
     private Vector3 _point = Vector3.zero;
     private Vector3 _dir = Vector3.zero;
 
-    public void SetHandle (Vector3 point, Vector3 dir)
+	public void SetHandle (Vector3 point, Vector3 dir, UICanvas cvs)
     {
         _point = point;
         _dir = dir;
+		_SetHandle (cvs);
     }
 
-    private void _SetHandle()
+	private void _SetHandle(UICanvas cvs)
     {
-        Transform __handle = Game.transform.FindChild("Handle");
+		Transform __handle = null;
+		if(cvs == UICanvas.Game)
+        	__handle = Game.transform.FindChild("Handle");
+		else if (cvs == UICanvas.Tutorial)
+			__handle = Tutorial.transform.FindChild("Handle");			
 
         if (_point != Vector3.zero)
         {
-            __handle.gameObject.SetActive(true);
+				__handle.gameObject.SetActive(true);
+
 
             RectTransform __point = __handle.FindChild("Point").GetComponent<RectTransform>();
             RectTransform __dir = __handle.FindChild("Dir").GetComponent<RectTransform>();
@@ -150,9 +159,6 @@ public class UiManager : MonoBehaviour {
 
 
     void Update()
-    {
-
-        _SetHandle();
-
+	{
     }
 }

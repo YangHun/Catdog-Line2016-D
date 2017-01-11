@@ -19,19 +19,16 @@ public class TutorialManager : MonoBehaviour {
 
     private int cursor = 0;
 
+	private bool _open = false;
 
+	[SerializeField]
+	private GameObject Gate;
+	[SerializeField]
+	private static GameObject[] Flowers = new GameObject[6];
     [SerializeField]
-    private UnityEngine.Object[] FlowerPrefab = new UnityEngine.Object[3];
-    private GameObject[] Flowers = new GameObject[3];
-    [SerializeField]
-    private bool[] HasFlowers = new bool[3];
+    private bool[] HasFlowers = new bool[6];
     
-    private Dictionary<Flower.Type, int> FlowerDict = new Dictionary<Flower.Type, int>()
-        {
-            { Flower.Type.Baby_s, 0 }, //안개꽃
-            { Flower.Type.Valley, 1 }, //은방울꽃
-            { Flower.Type.Kalmia, 2 },  //칼미아
-        };
+	private Dictionary<GameObject, int> FlowerDict;
 
     private Vector3[,] _flowerpos = new Vector3[2, 3] {
         { new Vector3 (-5.83f, -0.16f, 0.0f), new Vector3 (-3.64f, 4.84f, 0.0f), new Vector3(2.38f, -5.42f, 0.0f) },
@@ -39,7 +36,7 @@ public class TutorialManager : MonoBehaviour {
     };
 
 
-    bool fieldopen = false;
+    int fieldopen = -1;
 
     // Use this for initialization
     void Start () {
@@ -52,76 +49,106 @@ public class TutorialManager : MonoBehaviour {
         {
             _manager = this;
         }
+
+		GameObject _f = transform.GetChild (3).gameObject;
+		for (int i = 0; i < 6; i++) {
+			Flowers [i] = _f.transform.GetChild (i).gameObject;
+		}
+
+		FlowerDict = new Dictionary<GameObject, int>()
+		{
+			{ Flowers[0], 0 }, //안개꽃
+			{ Flowers[1], 1 }, //은방울꽃
+			{ Flowers[2], 2 },  //칼미아
+			{ Flowers[3], 3 }, //안개꽃
+			{ Flowers[4], 4 }, //은방울꽃
+			{ Flowers[5], 5 }  //칼미아
+		};
+
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (fieldopen)
+		if (fieldopen > -1 && cursor < 2)
         {
-            Wall[cursor].OpenWall();
+			
+			Wall[fieldopen].OpenWall();
             cursor++;
-            resetFlowers();
-            fieldopen = false;
+            fieldopen = -1;
         }
 
         if(cursor >= 2) {
-            
+
+			if (!_open) {
+				
+				StartCoroutine ("OpenGate");
+				_open = true;
+			}            
                 //End Tutorial
         } 
+	}
+
+	IEnumerator OpenGate(){
+
+		yield return new WaitForSeconds (2f);
+		Gate.SetActive (true);
 	}
 
     public void Init()
     {
 
+		UiManager.I.UpdatePollenText (GameManager.Data.LocalPlln);
+
         cursor = 0;
-
-        for (int i=0; i<Flowers.Length; i++)
-        {
-            GameObject g = (GameObject)Instantiate(FlowerPrefab[i], _flowerpos[cursor,i], Quaternion.identity);
-            g.transform.SetParent(transform.GetChild(2)); //Flower Empty Object
-        }
-
+	
         GameObject.FindGameObjectWithTag("Player").transform.position = Vector3.zero;
+
+		_open = false;
+		Gate.SetActive (_open);
 
     }
 
-    public void ObtainFlower(Flower.Type t)
+    public void ObtainFlower(GameObject t)
     {
         Debug.Log("Enter!!");
         HasFlowers[FlowerDict[t]] = true;
 
-        fieldopen = openfield();
+		fieldopen = openfield();
     }
 
-    bool openfield()
-    {
-        bool c = true;
+	private enum WallOpenType {Wall_1, Wall_2, None}
 
-        for (int i = 0; i < HasFlowers.Length; i++)
+	int openfield()
+    {
+		int c = 0;
+
+        for (int i = 0; i < 3; i++)
         {
-            if (!HasFlowers[i])
-                c = false;
+			if (!HasFlowers [i]) {
+				c = -1;
+				break;
+			}
         }
+
+		if (c == 0 && cursor > 0) {
+			c = 1;
+			for (int i = 3; i < 6; i++)
+			{
+				if (!HasFlowers [i]) {
+					c = -1;
+					break;
+				}
+			}
+
+		}
 
         return c;
     }
+		
 
-    void resetFlowers()
-    {
-        if (cursor < 2)
-        {
-            for (int i = 0; i < HasFlowers.Length; i++)
-            {
-                HasFlowers[i] = false;
+	public void EndTutorial(){
 
-                Flowers[i] = (GameObject)Instantiate(FlowerPrefab[i], Vector3.zero, Quaternion.identity);
-                Flowers[i].gameObject.transform.position = _flowerpos[cursor, i];
-                Flowers[i].transform.SetParent(transform.GetChild(2).transform);
-            }
-        }
-
-    }
-
-        
+		GameManager.I.TrnsTutorialToMenu ();
+	}
 
 }

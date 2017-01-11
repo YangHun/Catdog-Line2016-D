@@ -50,7 +50,13 @@ public class FieldManager : MonoBehaviour {
 	{
 		//TODO: Init field (for after 1st play)
         
+		// Player transform.position & local data
+		if ( _player == null )
+			_player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player>();
 
+		_player.transform.position = Vector3.zero;
+		Camera.main.transform.position = new Vector3 (0.0f, 0.0f, -10.0f);
+		_player.transform.rotation = Quaternion.Euler (Vector3.zero);
 
 		// Map Generate
 		if (_maze.tag != "Map")
@@ -65,13 +71,6 @@ public class FieldManager : MonoBehaviour {
 			}
 		}
 
-		// Player transform.position & local data
-		if ( _player == null )
-			_player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player>();
-
-		_player.transform.position = Vector3.zero;
-		Camera.main.transform.position = new Vector3 (0.0f, 0.0f, -10.0f);
-		_player.transform.rotation = Quaternion.Euler (Vector3.zero);
 
 		GameManager.Data.Reset (PlayerData.ResetType.All);
 		UiManager.I.UpdatePollenText (GameManager.Data.LocalPlln);
