@@ -87,10 +87,6 @@ public class TutorialManager : MonoBehaviour {
 			}            
                 //End Tutorial
         }
-
-		if (_start_menu_tutorial) {
-			MenuTutorial ();
-		}
 	}
 
 	IEnumerator OpenGate(){
@@ -101,10 +97,7 @@ public class TutorialManager : MonoBehaviour {
 
     public void Init()
     {
-
-
-
-		UiManager.I.UpdatePollenText (GameManager.Data.LocalPlln);
+		UiManager.I.UpdateTutorialPollenText (GameManager.Data.LocalPlln);
 
         cursor = 0;
 	
@@ -113,6 +106,14 @@ public class TutorialManager : MonoBehaviour {
 		_open = false;
 		Gate.SetActive (_open);
 
+    }
+
+    public void ObtainPollen(int value)
+    {
+        //      Debug.Log(value);
+        GameManager.Data.Update(value, PlayerData.UpdateType.LocalPlln);
+        //		Debug.Log(GameManager.Data.LocalPlln);
+        UiManager.I.UpdateTutorialPollenText(GameManager.Data.LocalPlln);
     }
 
     public void ObtainFlower(GameObject t)
@@ -156,22 +157,14 @@ public class TutorialManager : MonoBehaviour {
 	public void EndTutorialGame(){
 
 		InitMenu ();
+        GameManager.I.TrnsTutorialToTMenu();
 
-	}
+    }
 
 	void InitMenu(){
 		UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
 		UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial_Menu);
 		_start_menu_tutorial = true;
 	
-	}
-
-	void MenuTutorial(){
-		//TODO: Catcher's Talk, transition to menu ui
-	}
-
-	public void End	Tutorial(){
-	
-		GameManager.I.TrnsTutorialToMenu ();
 	}
 }
