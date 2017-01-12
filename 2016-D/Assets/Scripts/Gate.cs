@@ -7,7 +7,7 @@ public class Gate : MonoBehaviour {
 	void OnCollisionEnter2D (Collision2D col){
 
 		if (col.gameObject.tag == "Player") {
-			TutorialManager.I.EndTutorial ();
+			TutorialManager.I.EndTutorialGame ();
 			transform.DetachChildren ();
 			Destroy (this.gameObject);
 		}

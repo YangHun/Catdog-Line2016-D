@@ -20,6 +20,7 @@ public class TutorialManager : MonoBehaviour {
     private int cursor = 0;
 
 	private bool _open = false;
+	private bool _start_menu_tutorial = false;
 
 	[SerializeField]
 	private GameObject Gate;
@@ -85,7 +86,11 @@ public class TutorialManager : MonoBehaviour {
 				_open = true;
 			}            
                 //End Tutorial
-        } 
+        }
+
+		if (_start_menu_tutorial) {
+			MenuTutorial ();
+		}
 	}
 
 	IEnumerator OpenGate(){
@@ -96,6 +101,8 @@ public class TutorialManager : MonoBehaviour {
 
     public void Init()
     {
+
+
 
 		UiManager.I.UpdatePollenText (GameManager.Data.LocalPlln);
 
@@ -146,9 +153,25 @@ public class TutorialManager : MonoBehaviour {
     }
 		
 
-	public void EndTutorial(){
+	public void EndTutorialGame(){
 
-		GameManager.I.TrnsTutorialToMenu ();
+		InitMenu ();
+
 	}
 
+	void InitMenu(){
+		UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
+		UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial_Menu);
+		_start_menu_tutorial = true;
+	
+	}
+
+	void MenuTutorial(){
+		//TODO: Catcher's Talk, transition to menu ui
+	}
+
+	public void End	Tutorial(){
+	
+		GameManager.I.TrnsTutorialToMenu ();
+	}
 }

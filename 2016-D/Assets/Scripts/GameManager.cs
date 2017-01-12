@@ -170,6 +170,10 @@ public class GameManager : MonoBehaviour {
 			UiManager.I.CanvasOff(UiManager.UICanvas.Game);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Story);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Unlock);
+
+			GameObject.Find ("Map").SetActive (false);
+			GameObject.Find ("Tutorial").SetActive (true);
+
 			TutorialManager.I.Init();
 			UiManager.I.CanvasOn (UiManager.UICanvas.Tutorial);
 		}
