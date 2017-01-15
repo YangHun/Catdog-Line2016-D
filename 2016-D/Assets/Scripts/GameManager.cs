@@ -24,19 +24,7 @@ public class GameManager : MonoBehaviour {
     private int LocalPollen = 0;
     private int[] LocalFlowers;
 
-    public enum GameFlow
-    {
-        Load,
-        Menu,
-        Game,
-        Save,
-        Story,
-        Tutorial,
-        Tutorial_Menu,
-        Tutorial_Catcher,
-        Catcher,
-        Null
-    };
+    public enum GameFlow { Load, Menu, Story, Tutorial, Game, Save, Unlock, Null };
 	private GameFlow _flow_prev;
 	private GameFlow _flow_next;
 
@@ -52,7 +40,7 @@ public class GameManager : MonoBehaviour {
         new Dictionary<string, int>()
         {
             { "Start", 0 },
-            { "Catcher", 1 },
+            { "Unlock", 1 },
             { "None", -1 }
         };
 
@@ -90,7 +78,7 @@ public class GameManager : MonoBehaviour {
 
         LocalFlowers = new int[_data.FlowerIndex.Count];
 
-		_flow_prev = GameFlow.Load;
+		_flow_prev = GameFlow.Tutorial;
         _flow_next = GameFlow.Null;
 
     }
@@ -121,24 +109,12 @@ public class GameManager : MonoBehaviour {
 			FlowTutorialState();
 			break;
 
-        case GameFlow.Tutorial_Menu:
-            Debug.Log("Tutorial_Menu!");
-            //TODO: Tutorial
-            FlowTutorialMenuState();
-            break;
-
-        case GameFlow.Tutorial_Catcher:
-            Debug.Log("Tutorial_Catcher!");
-            //TODO: Tutorial
-            FlowTutorialCatcherState();
-            break;
-
         case GameFlow.Menu:
             Debug.Log("Menu!");
             FlowMenuState(_GetMenuButton);
             break;
-		case GameFlow.Catcher:
-			Debug.Log ("Catcher!");
+		case GameFlow.Unlock:
+			Debug.Log ("Unlock!");
 
 			break;
         case GameFlow.Game:
@@ -172,9 +148,7 @@ public class GameManager : MonoBehaviour {
 			UiManager.I.CanvasOff (UiManager.UICanvas.Game);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Menu);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
-            UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial_Menu);
-            UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial_Catcher);
-            UiManager.I.CanvasOff (UiManager.UICanvas.Catcher);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Unlock);
 			UiManager.I.CanvasOn (UiManager.UICanvas.Story);
 			_teller.StartStory ();
 
@@ -194,12 +168,10 @@ public class GameManager : MonoBehaviour {
 		if (isFirstFrame) {
 			UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Game);
-            UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Menu);
-            UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Catcher);
-            UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
-            UiManager.I.CanvasOff(UiManager.UICanvas.Story);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Story);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Unlock);
 
-            GameObject.Find ("Map").SetActive (false);
+			GameObject.Find ("Map").SetActive (false);
 			GameObject.Find ("Tutorial").SetActive (true);
 
 			TutorialManager.I.Init();
@@ -210,50 +182,18 @@ public class GameManager : MonoBehaviour {
 		//_flow_next = GameFlow.Menu;
 	}	
 
-	public void TrnsTutorialToTMenu(){
-        UiManager.I.SetHandle(Vector3.zero, Vector3.zero, UiManager.UICanvas.Tutorial);
-        _flow_next = GameFlow.Tutorial_Menu;
+	public void TrnsTutorialToMenu(){
+
+		UiManager.I.SetHandle (Vector3.zero, Vector3.zero, UiManager.UICanvas.Tutorial);
+		UiManager.I.ChangeCanvas (UiManager.UICanvas.Tutorial, UiManager.UICanvas.Menu);
+		_flow_next = GameFlow.Menu;
+		LocalPlayCnt = 0;
 	}
-
-    void FlowTutorialMenuState()
-    {
-        if (isFirstFrame)
-        {
-            UiManager.I.ChangeCanvas(UiManager.UICanvas.Tutorial, UiManager.UICanvas.Tutorial_Menu);
-        }
-    }
-
-    public void TrnsTMenuToTCatcher()
-    {
-
-        UiManager.I.ChangeCanvas(UiManager.UICanvas.Tutorial_Menu, UiManager.UICanvas.Tutorial_Catcher);
-        _flow_next = GameFlow.Tutorial_Catcher;
-     
-    }
-
-    public void TrnsAnyToMenu()
-    {
-
-        _flow_next = GameFlow.Menu;
-    }
-
-    void FlowTutorialCatcherState()
-    {
-        if (isFirstFrame)
-        {
-
-        }
-    }
 
     void FlowMenuState(int n)
     {
         if (isFirstFrame)
         {
-            UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Menu);
-            UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Catcher);
-            UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
-            UiManager.I.CanvasOff(UiManager.UICanvas.Story);
-            UiManager.I.CanvasOn(UiManager.UICanvas.Menu);
             //Change UI
             if (LocalPlayCnt == 0)
             {
@@ -261,6 +201,7 @@ public class GameManager : MonoBehaviour {
             }
             else
             {
+                UiManager.I.CanvasOn(UiManager.UICanvas.Menu);
                 UiManager.I.LocalFirstPlayMenu(false);
                 UiManager.I.UpdateResultText();
             }
@@ -283,8 +224,8 @@ public class GameManager : MonoBehaviour {
 				Destroy (GameObject.Find ("Particle System"));
 			}
             break;
-        case 1: //TODO:Catcher Stage UI
-			TrnsMenuToCatcher();
+        case 1: //TODO:Unlock Stage UI
+			TrnsMenuToUnlock();
         	break;
         }
         
@@ -297,12 +238,12 @@ public class GameManager : MonoBehaviour {
 
     }
 
-	void TrnsMenuToCatcher(){
-		UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Catcher);
-		_flow_next = GameFlow.Catcher;
+	void TrnsMenuToUnlock(){
+		UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Unlock);
+		_flow_next = GameFlow.Unlock;
 	}
 
-	void FlowCatcherState() {
+	void FlowUnlockState() {
 		if (isFirstFrame) {
 		}
 	}	
