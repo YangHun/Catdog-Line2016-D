@@ -10,8 +10,7 @@ public class UiManager : MonoBehaviour {
 	static Canvas Story;
 	static Canvas Tutorial;
 	static Canvas Tutorial_Menu;
-    static Canvas Tutorial_Catcher;
-    static Canvas Catcher;
+	static Canvas Unlock;
 
     private static UiManager _manager = null;
     public static UiManager I
@@ -22,7 +21,7 @@ public class UiManager : MonoBehaviour {
         }
     }
 
-	public enum UICanvas { Menu, Game, Story, Tutorial, Tutorial_Menu, Tutorial_Catcher, Catcher };
+	public enum UICanvas { Menu, Game, Story, Tutorial, Tutorial_Menu, Unlock };
     private Dictionary<UICanvas, Canvas> CanvasDict;
 
     private float r;
@@ -47,60 +46,25 @@ public class UiManager : MonoBehaviour {
 		Story = GameObject.Find("Story UI").GetComponent<Canvas>();
 		Tutorial = GameObject.Find("Tutorial UI").GetComponent<Canvas>();
 		Tutorial_Menu = GameObject.Find("Tutorial_Menu UI").GetComponent<Canvas>();
-        Tutorial_Catcher = GameObject.Find("Tutorial_Catcher UI").GetComponent<Canvas>();
-        Catcher = GameObject.Find("Catcher UI").GetComponent<Canvas>();
-
+		Unlock = GameObject.Find("Unlock UI").GetComponent<Canvas>();
 
         CanvasDict = new Dictionary<UICanvas, Canvas>()
         {
             { UICanvas.Menu, Menu },
             { UICanvas.Game, Game },
 			{ UICanvas.Story, Story },
-			{ UICanvas.Catcher, Catcher },
+			{ UICanvas.Unlock, Unlock },
 			{ UICanvas.Tutorial, Tutorial },
-			{ UICanvas.Tutorial_Menu, Tutorial_Menu },
-            { UICanvas.Tutorial_Catcher, Tutorial_Catcher }
+			{ UICanvas.Tutorial_Menu, Tutorial_Menu }
         };
 
 
         r = Game.transform.FindChild("Handle").FindChild("Point").GetComponent<Image>().sprite.texture.width/2.0f;
 	}
 
-    public void ButtonMenuEvent(Button b)
+    public void MenuButtonEvent (Button b)
     {
         GameManager.I.GetMenuButton(b);
-    }
-
-
-    public void ButtonCatcherEvent()
-    {
-        //TODO:Catcher's Talk
-        GameManager.I.TrnsTMenuToTCatcher();
-    }
-
-    public void ButtonTCatcherEvent()
-    {
-        if(GameManager.I.CurrentState == GameManager.GameFlow.Tutorial_Menu)
-            GameManager.I.TrnsTMenuToTCatcher();
-    }
-
-    public void ButtonHomeEvent()
-    {
-       GameManager.I.TrnsAnyToMenu();
-    }
-
-    public void ButtonNoteEvent()
-    {
-        //TODO:Catcher's Talk
-    }
-    public void ButtonBrainEvent()
-    {
-        //TODO:Catcher's Talk
-    }
-
-    public void ButtonSettingEvent()
-    {
-        //TODO:Catcher's Talk
     }
 
     public void ChangeCanvas (UICanvas pre, UICanvas next)
@@ -141,11 +105,6 @@ public class UiManager : MonoBehaviour {
     public void UpdatePollenText(int t)
     {
         Game.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
-    }
-
-    public void UpdateTutorialPollenText(int t)
-    {
-        Tutorial.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
     }
 
     private int _result;
