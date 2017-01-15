@@ -87,10 +87,6 @@ public class TutorialManager : MonoBehaviour {
 			}            
                 //End Tutorial
         }
-
-		if (_start_menu_tutorial) {
-			MenuTutorial ();
-		}
 	}
 
 	IEnumerator OpenGate(){
@@ -154,24 +150,6 @@ public class TutorialManager : MonoBehaviour {
 		
 
 	public void EndTutorialGame(){
-
-		InitMenu ();
-
-	}
-
-	void InitMenu(){
-		UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
-		UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial_Menu);
-		_start_menu_tutorial = true;
-	
-	}
-
-	void MenuTutorial(){
-		//TODO: Catcher's Talk, transition to menu ui
-	}
-
-	public void End	Tutorial(){
-	
-		GameManager.I.TrnsTutorialToMenu ();
+		GameManager.I.TrnsTutorialToTMenu ();
 	}
 }

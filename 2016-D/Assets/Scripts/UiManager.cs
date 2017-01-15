@@ -10,7 +10,10 @@ public class UiManager : MonoBehaviour {
 	static Canvas Story;
 	static Canvas Tutorial;
 	static Canvas Tutorial_Menu;
-	static Canvas Unlock;
+	static Canvas Tutorial_Catcher;
+	static Canvas Catcher;
+
+
 
     private static UiManager _manager = null;
     public static UiManager I
@@ -21,7 +24,7 @@ public class UiManager : MonoBehaviour {
         }
     }
 
-	public enum UICanvas { Menu, Game, Story, Tutorial, Tutorial_Menu, Unlock };
+	public enum UICanvas { Menu, Game, Story, Tutorial, Tutorial_Menu, Tutorial_Catcher, Catcher };
     private Dictionary<UICanvas, Canvas> CanvasDict;
 
     private float r;
@@ -46,26 +49,58 @@ public class UiManager : MonoBehaviour {
 		Story = GameObject.Find("Story UI").GetComponent<Canvas>();
 		Tutorial = GameObject.Find("Tutorial UI").GetComponent<Canvas>();
 		Tutorial_Menu = GameObject.Find("Tutorial_Menu UI").GetComponent<Canvas>();
-		Unlock = GameObject.Find("Unlock UI").GetComponent<Canvas>();
+		Tutorial_Catcher = GameObject.Find("Tutorial_Catcher UI").GetComponent<Canvas>();
+		Catcher = GameObject.Find("Catcher UI").GetComponent<Canvas>();
 
         CanvasDict = new Dictionary<UICanvas, Canvas>()
         {
             { UICanvas.Menu, Menu },
             { UICanvas.Game, Game },
 			{ UICanvas.Story, Story },
-			{ UICanvas.Unlock, Unlock },
+			{ UICanvas.Catcher, Catcher },
 			{ UICanvas.Tutorial, Tutorial },
-			{ UICanvas.Tutorial_Menu, Tutorial_Menu }
+			{ UICanvas.Tutorial_Menu, Tutorial_Menu },
+			{ UICanvas.Tutorial_Catcher, Tutorial_Catcher }
         };
 
 
         r = Game.transform.FindChild("Handle").FindChild("Point").GetComponent<Image>().sprite.texture.width/2.0f;
 	}
 
-    public void MenuButtonEvent (Button b)
+	public void ButtonMenuEvent (Button b)
     {
         GameManager.I.GetMenuButton(b);
     }
+
+	public void ButtonTCatcherEvent ()
+	{
+		GameManager.I.TrnsTMenuToTCatcher ();
+	}
+
+	public void ButtonCatcherEvent ()
+	{
+
+
+	}
+
+	public void ButtonNoteEvent ()
+	{
+		
+	}
+
+	public void ButtonBrainEvent ()
+	{
+		
+	}
+
+	public void ButtonSettingEvent ()
+	{
+
+	}
+
+	public void ButtonHomeEvent(){
+		GameManager.I.TrnsAnyToMenu ();
+	}
 
     public void ChangeCanvas (UICanvas pre, UICanvas next)
     {

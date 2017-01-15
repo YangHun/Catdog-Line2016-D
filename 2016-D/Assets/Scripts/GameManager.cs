@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour {
     private int LocalPollen = 0;
     private int[] LocalFlowers;
 
-    public enum GameFlow { Load, Menu, Story, Tutorial, Game, Save, Unlock, Null };
+    public enum GameFlow { Load, Menu, Story, Tutorial, Tutorial_Menu, Tutorial_Catcher, Game, Save, Catcher, Null };
 	private GameFlow _flow_prev;
 	private GameFlow _flow_next;
 
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour {
         new Dictionary<string, int>()
         {
             { "Start", 0 },
-            { "Unlock", 1 },
+            { "Catcher", 1 },
             { "None", -1 }
         };
 
@@ -103,18 +103,29 @@ public class GameManager : MonoBehaviour {
 			Debug.Log ("Story!");
 			FlowStoryState ();
 			break;
+
 		case GameFlow.Tutorial:
 			Debug.Log ("Tutorial!");
 			//TODO: Tutorial
 			FlowTutorialState();
+			break;
+		case GameFlow.Tutorial_Menu:
+			Debug.Log ("Tutorial_Menu!");
+			//TODO: Tutorial
+			FlowTutorialMenuState();
+			break;
+		case GameFlow.Tutorial_Catcher:
+			Debug.Log ("Tutorial_Catcher!");
+			//TODO: Tutorial
+			FlowTutorialCatcherState();
 			break;
 
         case GameFlow.Menu:
             Debug.Log("Menu!");
             FlowMenuState(_GetMenuButton);
             break;
-		case GameFlow.Unlock:
-			Debug.Log ("Unlock!");
+		case GameFlow.Catcher:
+			Debug.Log ("Catcher!");
 
 			break;
         case GameFlow.Game:
@@ -148,7 +159,7 @@ public class GameManager : MonoBehaviour {
 			UiManager.I.CanvasOff (UiManager.UICanvas.Game);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Menu);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
-			UiManager.I.CanvasOff(UiManager.UICanvas.Unlock);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
 			UiManager.I.CanvasOn (UiManager.UICanvas.Story);
 			_teller.StartStory ();
 
@@ -169,7 +180,9 @@ public class GameManager : MonoBehaviour {
 			UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Game);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Story);
-			UiManager.I.CanvasOff(UiManager.UICanvas.Unlock);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Menu);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Catcher);
 
 			GameObject.Find ("Map").SetActive (false);
 			GameObject.Find ("Tutorial").SetActive (true);
@@ -182,13 +195,58 @@ public class GameManager : MonoBehaviour {
 		//_flow_next = GameFlow.Menu;
 	}	
 
-	public void TrnsTutorialToMenu(){
+	public void TrnsTutorialToTMenu(){
 
 		UiManager.I.SetHandle (Vector3.zero, Vector3.zero, UiManager.UICanvas.Tutorial);
-		UiManager.I.ChangeCanvas (UiManager.UICanvas.Tutorial, UiManager.UICanvas.Menu);
-		_flow_next = GameFlow.Menu;
-		LocalPlayCnt = 0;
+		UiManager.I.ChangeCanvas (UiManager.UICanvas.Tutorial, UiManager.UICanvas.Tutorial_Menu);
+		_flow_next = GameFlow.Tutorial_Menu;
 	}
+
+
+	void FlowTutorialMenuState(){
+		if (isFirstFrame) {
+			UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Game);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Story);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial_Catcher);
+
+			UiManager.I.CanvasOn (UiManager.UICanvas.Tutorial_Menu);
+		}
+	}
+
+	public void TrnsTMenuToTCatcher(){
+
+		UiManager.I.ChangeCanvas (UiManager.UICanvas.Tutorial_Menu, UiManager.UICanvas.Tutorial_Catcher);
+		_flow_next = GameFlow.Tutorial_Catcher;
+
+	}
+
+	public void TrnsAnyToMenu(){
+
+		UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Catcher);
+		UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
+
+		UiManager.I.CanvasOn (UiManager.UICanvas.Menu);
+
+		_flow_next = GameFlow.Menu;
+
+	}
+
+	void FlowTutorialCatcherState(){
+		if (isFirstFrame) {
+			UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Game);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Story);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
+			UiManager.I.CanvasOn (UiManager.UICanvas.Tutorial_Menu);
+
+			UiManager.I.CanvasOn (UiManager.UICanvas.Tutorial_Catcher);
+		}
+	}
+
 
     void FlowMenuState(int n)
     {
@@ -224,8 +282,8 @@ public class GameManager : MonoBehaviour {
 				Destroy (GameObject.Find ("Particle System"));
 			}
             break;
-        case 1: //TODO:Unlock Stage UI
-			TrnsMenuToUnlock();
+        case 1: //TODO:Catcher Stage UI
+			TrnsMenuToCatcher();
         	break;
         }
         
@@ -238,12 +296,12 @@ public class GameManager : MonoBehaviour {
 
     }
 
-	void TrnsMenuToUnlock(){
-		UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Unlock);
-		_flow_next = GameFlow.Unlock;
+	void TrnsMenuToCatcher(){
+		UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Catcher);
+		_flow_next = GameFlow.Catcher;
 	}
 
-	void FlowUnlockState() {
+	void FlowCatcherState() {
 		if (isFirstFrame) {
 		}
 	}	

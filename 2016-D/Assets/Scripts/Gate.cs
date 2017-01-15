@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class Gate : MonoBehaviour {
 
-	void OnCollisionEnter2D (Collision2D col){
+	void OnTriggerStay2D (Collider2D col){
 
-		if (col.gameObject.tag == "Player") {
-			TutorialManager.I.EndTutorialGame ();
-			transform.DetachChildren ();
-			Destroy (this.gameObject);
+		if (col.gameObject.tag == "Player" ) {
+
+			ParticleSystem p = gameObject.GetComponentInChildren<ParticleSystem>();
+
+			if(p.isPlaying){
+				TutorialManager.I.EndTutorialGame ();
+				transform.DetachChildren ();
+				Destroy (this.gameObject);
+			}
 		}
 	}
 }
