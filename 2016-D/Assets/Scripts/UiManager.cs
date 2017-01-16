@@ -79,7 +79,14 @@ public class UiManager : MonoBehaviour {
 
 	public void ButtonCatcherEvent ()
 	{
+		GameManager.I.TrnsMenuToCatcher ();
 
+	}
+
+	public void ButtonCatcherPurchaseEvent (Image b)
+	{
+		int _value = int.Parse(b.sprite.name.Substring(7));
+		GameManager.I.EventCatcherPurchase (_value);
 
 	}
 
@@ -97,7 +104,7 @@ public class UiManager : MonoBehaviour {
 	{
 
 	}
-
+		
 	public void ButtonHomeEvent(){
 		GameManager.I.TrnsAnyToMenu ();
 	}
@@ -141,6 +148,11 @@ public class UiManager : MonoBehaviour {
     {
         Game.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
     }
+
+	public void UpdateCatcherPollenText(int t)
+	{
+		Catcher.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
+	}
 
     private int _result;
 

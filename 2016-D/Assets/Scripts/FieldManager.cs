@@ -158,6 +158,7 @@ public class FieldManager : MonoBehaviour {
         Debug.Log(value);
 		GameManager.Data.Update(value, PlayerData.UpdateType.LocalPlln);
 		Debug.Log(GameManager.Data.LocalPlln);
+		Debug.Log(GameManager.Data.TotalPlln);
 		UiManager.I.UpdatePollenText(GameManager.Data.LocalPlln);
     }
 

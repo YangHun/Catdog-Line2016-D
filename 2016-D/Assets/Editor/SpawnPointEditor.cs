@@ -31,6 +31,9 @@ public class SpawnPointEditor : Editor {
 
 	public override void OnInspectorGUI(){
 
+		serializedObject.Update ();
+		EditorGUILayout.PropertyField (_type, true);
+		serializedObject.ApplyModifiedProperties ();
 
 	//	Tools.hidden = true;
 

@@ -55,7 +55,7 @@ public class Insect : MonoBehaviour {
 
 		transform.rotation = Quaternion.Euler (angle);
 
-		Debug.Log (this.gameObject.name + " " + angle);
+//		Debug.Log (this.gameObject.name + " " + angle);
 
 	}
 

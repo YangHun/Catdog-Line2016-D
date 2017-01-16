@@ -49,8 +49,8 @@ public class FieldSpawningPool : MonoBehaviour {
 	}
 
 
-
-	private float _timer;
+	[SerializeField]
+	private float _timer = 0.0f;
 	private int cursor;
 
 	public void Init(){
@@ -58,31 +58,31 @@ public class FieldSpawningPool : MonoBehaviour {
 		//Init() is called when everytime Game Starts
 		Transform m = FieldManager.I.Maze.transform;
 
-		//for enomy spawning
-		cursor = -1;
-		for (int i=0; i< m.childCount; i++){
+		if (m != null) {
+			//for enomy spawning
+			cursor = 0;
+			for (int i = 0; i < m.childCount; i++) {
+				if (m.GetChild (i).gameObject.activeSelf == true)
+					cursor = i;
+			}
+			_point = m.GetChild (cursor).GetComponentsInChildren<SpawnPoint> () [0];
 
-			if (m.GetChild (i).gameObject.activeSelf == true)
-				cursor++;
-		}
-		_point = m.GetChild (cursor).GetComponentInChildren<SpawnPoint> ();
+			if (_point == null)
+				Application.Quit ();
 
-		if (_point == null)
-			return;
+			//start spawning index
+			int s = (Random.Range (1, NUM) + Random.Range (1, NUM) + Random.Range (1, NUM)) % NUM;
+			cursor = s;
 
-		//start spawning index
-		int s = (Random.Range (1, NUM) + Random.Range (1, NUM) + Random.Range (1, NUM)) % NUM;
-		cursor = s;
-
-		//pollen spawn
-
+			//pollen spawn
+		} 
 	}
 
 	public void Spawn(){
-
 		if (_point.SpawnType == SpawnPoint.Type.Enemy) {
 			_spawnEnemy ();
-		}
+		} else
+			Debug.Log (_point.SpawnType);
 	}
 
 	public void SpawnFlower(SpawnPoint sp, int index){
@@ -139,6 +139,7 @@ public class FieldSpawningPool : MonoBehaviour {
 
 			for (int i = 0; i < _point.SpawnPosition.Count; i++) {
 				if ((i % NUM) == (cursor % NUM)) {
+
 					GameObject g = (GameObject) Instantiate (Enemy, _point.SpawnPosition [i], Quaternion.identity);
 					Vector3 _pos = g.transform.position;
 					_pos.z = -5.0f;

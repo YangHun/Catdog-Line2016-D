@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour {
 
         LocalFlowers = new int[_data.FlowerIndex.Count];
 
-		_flow_prev = GameFlow.Tutorial;
+		_flow_prev = GameFlow.Load;
         _flow_next = GameFlow.Null;
 
     }
@@ -226,6 +226,7 @@ public class GameManager : MonoBehaviour {
 	public void TrnsAnyToMenu(){
 
 		UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Catcher);
+		UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Menu);
 		UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
 
 		UiManager.I.CanvasOn (UiManager.UICanvas.Menu);
@@ -283,7 +284,7 @@ public class GameManager : MonoBehaviour {
 			}
             break;
         case 1: //TODO:Catcher Stage UI
-			TrnsMenuToCatcher();
+			//TrnsMenuToCatcher();
         	break;
         }
         
@@ -296,15 +297,41 @@ public class GameManager : MonoBehaviour {
 
     }
 
-	void TrnsMenuToCatcher(){
+	public void TrnsMenuToCatcher(){
 		UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Catcher);
 		_flow_next = GameFlow.Catcher;
 	}
 
 	void FlowCatcherState() {
 		if (isFirstFrame) {
+			UiManager.I.UpdateCatcherPollenText (_data.TotalPlln);
 		}
+
+
+
 	}	
+
+	public void EventCatcherPurchase(int value){
+
+		//TODO: purchase
+
+		if (_data != null) {
+
+			if (value <= _data.TotalPlln) {
+
+				_data.Update ((-1) * value, PlayerData.UpdateType.LocalPlln);
+				StartCoroutine ("_save");
+				UiManager.I.UpdateCatcherPollenText (_data.TotalPlln);
+				Debug.Log ("Purchase");
+
+			} else {
+				Debug.Log ("Not Enough Money");
+			}
+		} 
+		else {
+			UiManager.I.UpdateCatcherPollenText (0);
+		}
+	}
 
     void FlowGameState()
     {
@@ -331,7 +358,7 @@ public class GameManager : MonoBehaviour {
 			if (FieldManager.I.EndGame == true) {
 				UiManager.I.SetHandle (Vector3.zero, Vector3.zero, UiManager.UICanvas.Game);
 				_flow_next = GameFlow.Save;
-				UiManager.I.UpdateResultValue (GameManager.Data.LocalPlln);
+				UiManager.I.UpdateResultValue (LocalPollen);
 			}
         }
     }
@@ -342,8 +369,8 @@ public class GameManager : MonoBehaviour {
     {
 		if (isFirstFrame) {
 
+			_data.Update (1, PlayerData.UpdateType.LocalPCount);
 			StartCoroutine("_save");
-			LocalPlayCnt++;   
 			_GetMenuButton = -1;
 			_flow_next = GameFlow.Menu;
 		}
@@ -351,7 +378,7 @@ public class GameManager : MonoBehaviour {
 		
     IEnumerator _save()
     {
-        _data.Update(LocalPlayCnt, LocalPollen, LocalFlowers);
+       _data.Update(_data.LocalPCount, _data.LocalPlln, LocalFlowers);
 
 		yield return null;
 		_data.Write ();

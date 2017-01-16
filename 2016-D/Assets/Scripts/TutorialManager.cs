@@ -93,6 +93,7 @@ public class TutorialManager : MonoBehaviour {
 
 		yield return new WaitForSeconds (2f);
 		Gate.SetActive (true);
+		Gate.GetComponentInChildren<ParticleSystem> ().Play ();
 	}
 
     public void Init()

@@ -34,6 +34,11 @@ public class PlayerData {
 
     private int TotalPlayCount;
     private int TotalPollen;
+	public int TotalPlln
+	{
+		get { return LocalPollen; }
+	}
+
 
     public List<string> FlowerIndex;
     private Dictionary<string, int> FlowerDict;
@@ -177,37 +182,37 @@ public class PlayerData {
 
             switch (str)
             {
-                case "s":
-                    string tmp = sr.ReadLine();
-                    _storyon = bool.Parse(tmp);
-                    Debug.Log("StoryMode : " + _storyon);
-                    break;
-                case "t":
+            case "s":
+                string tmp = sr.ReadLine();
+                _storyon = bool.Parse(tmp);
+                Debug.Log("StoryMode : " + _storyon);
+                break;
+            case "t":
+                tmp = sr.ReadLine();
+                _tutorial = bool.Parse(tmp);
+                Debug.Log("TutorialMode : " + _tutorial);
+                break;
+			case "tc":
+				tmp = sr.ReadLine ();
+				TotalPlayCount = int.Parse (tmp);
+				LocalPlayCount = 0;
+				Debug.Log("TotalPlayCount : " + TotalPlayCount);
+                break;
+            case "tp":
+                tmp = sr.ReadLine();
+				TotalPollen = int.Parse(tmp);
+				Debug.Log("TotalPollen : " + TotalPollen);
+                break;
+            case "fdict":
+                for (int i = 0; i < FlowerDict.Count; i++)
+                {
                     tmp = sr.ReadLine();
-                    _tutorial = bool.Parse(tmp);
-                    Debug.Log("TutorialMode : " + _tutorial);
-                    break;
-                case "tc":
-                    tmp = sr.ReadLine();
-                    LocalPlayCount = int.Parse(tmp);
-                    Debug.Log("LocalPlayCount : " + LocalPlayCount);
-                    break;
-                case "tp":
-                    tmp = sr.ReadLine();
-                    LocalPollen = int.Parse(tmp);
-                    Debug.Log("LocalPollen : " + LocalPollen);
-                    break;
-                case "fdict":
-                    for (int i = 0; i < FlowerDict.Count; i++)
-                    {
-                        tmp = sr.ReadLine();
-                        if (tmp != null)
-                            FlowerDict[FlowerIndex[i]] = int.Parse(tmp);
-                        else
-                            FlowerDict[FlowerIndex[i]] = -1;
-
-                    }
-                    break;
+                    if (tmp != null)
+                        FlowerDict[FlowerIndex[i]] = int.Parse(tmp);
+                    else
+                        FlowerDict[FlowerIndex[i]] = -1;
+                }
+         	   break;
 			case "f":
 				for (int i = 0; i < FIELDNUM; i++) {
 					tmp = sr.ReadLine ();
@@ -286,13 +291,13 @@ public class PlayerData {
 
     private void _update(int lc, int lp, int index, int value)
     {
-        if (lc > 0)
+        if (lc != 0)
             TotalPlayCount += lc;
 
-        if (lp > 0)
+        if (lp != 0)
             TotalPollen += lp;
 
-        if (index >= 0 && index < FlowerIndex.Count && value > 0)
+		if (index >= 0 && index < FlowerIndex.Count && value > 0)
         {
             FlowerDict[FlowerIndex[index]] = value;
         }
