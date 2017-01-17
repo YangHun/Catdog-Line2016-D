@@ -77,19 +77,23 @@ public class FieldManager : MonoBehaviour {
 
 
 
-		// Flowers Random Spawn & Pollens Spawn
-		Field[] _fields = _maze.gameObject.GetComponentsInChildren<Field>(false);
+        // Flowers Spawn & Pollens Spawn
+        
+        Field[] _fields = _maze.gameObject.GetComponentsInChildren<Field>(false);
 
 		for (int i = 0; i < _fields.Length; i++) {
 			if (_fields [i] == true) {
 
 				FieldSpawningPool.I.SpawnFlower (_fields [i].spawnPoint, i);
+
 			}
 		}
-	
 
-		// Enemies respawn
-		FieldSpawningPool.I.Init();
+        //TODO: Do sth After Player obtains Flower
+
+
+        // Enemies respawn
+        FieldSpawningPool.I.Init();
 
 
 

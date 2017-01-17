@@ -36,7 +36,7 @@ public class PlayerData {
     private int TotalPollen;
 	public int TotalPlln
 	{
-		get { return LocalPollen; }
+		get { return TotalPollen; }
 	}
 
 
@@ -305,19 +305,19 @@ public class PlayerData {
 
     private void _updatelocal(int lc, int lp)
     {
-        if (lc > 0)
+        if (lc != 0)
             LocalPlayCount += lc;
 
-        if (lp > 0)
+        if (lp != 0)
             LocalPollen += lp;
     }
 
     private void _updateall(int lc, int lp, int[] fd)
     {
-        if(lc > 0)
+        if(lc != 0)
            TotalPlayCount += lc;
 
-        if(lp > 0)
+        if(lp != 0)
             TotalPollen += lp;
 
         if (fd != null)

@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    private GameObject _startbg;
+
     private bool isFirstFrame = true;
 
     private int LocalPlayCnt = 0;
@@ -76,6 +78,9 @@ public class GameManager : MonoBehaviour {
             _data = new PlayerData();
         }
 
+        _startbg = GameObject.Find("StartBg");
+        _startbg.SetActive(false);
+
         LocalFlowers = new int[_data.FlowerIndex.Count];
 
 		_flow_prev = GameFlow.Load;
@@ -126,7 +131,7 @@ public class GameManager : MonoBehaviour {
             break;
 		case GameFlow.Catcher:
 			Debug.Log ("Catcher!");
-
+            FlowCatcherState();
 			break;
         case GameFlow.Game:
             Debug.Log("Game!");
@@ -199,7 +204,9 @@ public class GameManager : MonoBehaviour {
 
 		UiManager.I.SetHandle (Vector3.zero, Vector3.zero, UiManager.UICanvas.Tutorial);
 		UiManager.I.ChangeCanvas (UiManager.UICanvas.Tutorial, UiManager.UICanvas.Tutorial_Menu);
-		_flow_next = GameFlow.Tutorial_Menu;
+        _data.TutorialModeOff();
+        StartCoroutine("_save");
+        _flow_next = GameFlow.Tutorial_Menu;
 	}
 
 
@@ -254,8 +261,15 @@ public class GameManager : MonoBehaviour {
         if (isFirstFrame)
         {
             //Change UI
+            UiManager.I.CanvasOff(UiManager.UICanvas.Story);
+            UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
+            UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial);
+            UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Menu);
+            UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Catcher);
+
             if (LocalPlayCnt == 0)
             {
+                _startbg.SetActive(true);
                 UiManager.I.CanvasOff(UiManager.UICanvas.Game);
             }
             else
@@ -303,12 +317,10 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void FlowCatcherState() {
-		if (isFirstFrame) {
-			UiManager.I.UpdateCatcherPollenText (_data.TotalPlln);
-		}
-
-
-
+        if (isFirstFrame)
+        {
+            UiManager.I.UpdateCatcherPollenText(_data.TotalPlln);
+        }
 	}	
 
 	public void EventCatcherPurchase(int value){
@@ -319,10 +331,11 @@ public class GameManager : MonoBehaviour {
 
 			if (value <= _data.TotalPlln) {
 
-				_data.Update ((-1) * value, PlayerData.UpdateType.LocalPlln);
-				StartCoroutine ("_save");
+                Debug.Log((-1) * value + " pollen");
+				_data.Update ((-1) * value, PlayerData.UpdateType.Pollen);
 				UiManager.I.UpdateCatcherPollenText (_data.TotalPlln);
-				Debug.Log ("Purchase");
+                _data.Write();
+                Debug.Log ("Purchase");
 
 			} else {
 				Debug.Log ("Not Enough Money");
@@ -339,12 +352,17 @@ public class GameManager : MonoBehaviour {
         {
             //Menu Click Init
             _GetMenuButton = -1;
-
             //Change UI
             if (LocalPlayCnt == 0)
+            {
                 UiManager.I.ChangeCanvas(UiManager.UICanvas.Menu, UiManager.UICanvas.Game);
+                _startbg.SetActive(false);
+
+            }
             else
+            {
                 UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
+            }
 
           //  resetTimer();
             FieldManager.I.Init();
@@ -358,7 +376,7 @@ public class GameManager : MonoBehaviour {
 			if (FieldManager.I.EndGame == true) {
 				UiManager.I.SetHandle (Vector3.zero, Vector3.zero, UiManager.UICanvas.Game);
 				_flow_next = GameFlow.Save;
-				UiManager.I.UpdateResultValue (LocalPollen);
+				UiManager.I.UpdateResultValue (_data.LocalPlln);
 			}
         }
     }
@@ -369,7 +387,7 @@ public class GameManager : MonoBehaviour {
     {
 		if (isFirstFrame) {
 
-			_data.Update (1, PlayerData.UpdateType.LocalPCount);
+            LocalPlayCnt++;
 			StartCoroutine("_save");
 			_GetMenuButton = -1;
 			_flow_next = GameFlow.Menu;
@@ -378,7 +396,7 @@ public class GameManager : MonoBehaviour {
 		
     IEnumerator _save()
     {
-       _data.Update(_data.LocalPCount, _data.LocalPlln, LocalFlowers);
+        _data.Update(1, _data.LocalPlln, LocalFlowers);
 
 		yield return null;
 		_data.Write ();

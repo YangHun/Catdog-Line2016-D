@@ -98,10 +98,7 @@ public class TutorialManager : MonoBehaviour {
 
     public void Init()
     {
-
-
-
-		UiManager.I.UpdatePollenText (GameManager.Data.LocalPlln);
+		UiManager.I.UpdateTPollenText (0);
 
         cursor = 0;
 	
@@ -110,6 +107,15 @@ public class TutorialManager : MonoBehaviour {
 		_open = false;
 		Gate.SetActive (_open);
 
+    }
+
+    public void ObtainPollen(int value)
+    {
+        Debug.Log(value);
+        GameManager.Data.Update(value, PlayerData.UpdateType.LocalPlln);
+        Debug.Log(GameManager.Data.LocalPlln);
+        Debug.Log(GameManager.Data.TotalPlln);
+        UiManager.I.UpdateTPollenText(GameManager.Data.LocalPlln);
     }
 
     public void ObtainFlower(GameObject t)

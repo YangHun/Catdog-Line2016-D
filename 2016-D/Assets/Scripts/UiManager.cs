@@ -149,7 +149,12 @@ public class UiManager : MonoBehaviour {
         Game.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
     }
 
-	public void UpdateCatcherPollenText(int t)
+    public void UpdateTPollenText(int t)
+    {
+        Tutorial.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
+    }
+
+    public void UpdateCatcherPollenText(int t)
 	{
 		Catcher.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
 	}

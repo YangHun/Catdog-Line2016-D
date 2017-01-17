@@ -5,7 +5,7 @@ using UnityEngine;
 public class Pollen : MonoBehaviour {
 	
 
-    private const float FADETIME = 0.7f;
+    private const float FADETIME = 0.3f;
 
 	[SerializeField]
 	private int _value;
@@ -18,11 +18,11 @@ public class Pollen : MonoBehaviour {
     {
         _value = v;
     }
-    
 
     private void OnTriggerEnter2D(Collider2D col)
     {
         StartCoroutine("FadeOut");
+       
     }
 
     IEnumerator FadeOut()
@@ -36,8 +36,7 @@ public class Pollen : MonoBehaviour {
 			r.material.color = c;
             yield return null;
         }
-
-		if (GetComponent<SpriteRenderer> ().material.color.a <= Time.deltaTime * 2.0f)
-			Destroy(this.gameObject);
+           
+        Destroy(this.gameObject);
     }
 }
