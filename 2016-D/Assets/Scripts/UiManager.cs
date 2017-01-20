@@ -12,8 +12,16 @@ public class UiManager : MonoBehaviour {
 	static Canvas Tutorial_Menu;
 	static Canvas Tutorial_Catcher;
 	static Canvas Catcher;
+	static Canvas Note;
+	static Canvas Brain;
+	static Canvas Brain_Unlock;
 
-
+	private string[] BrainFieldName = new string[4]{
+		"Field_Name_1",
+		"Field_Name_2",
+		"Field_Name_3",
+		"Field_Name_4"
+	};
 
     private static UiManager _manager = null;
     public static UiManager I
@@ -24,7 +32,7 @@ public class UiManager : MonoBehaviour {
         }
     }
 
-	public enum UICanvas { Menu, Game, Story, Tutorial, Tutorial_Menu, Tutorial_Catcher, Catcher };
+	public enum UICanvas { Menu, Game, Story, Tutorial, Tutorial_Menu, Tutorial_Catcher, Catcher, Note, Brain, Brain_Unlock};
     private Dictionary<UICanvas, Canvas> CanvasDict;
 
     private float r;
@@ -51,6 +59,9 @@ public class UiManager : MonoBehaviour {
 		Tutorial_Menu = GameObject.Find("Tutorial_Menu UI").GetComponent<Canvas>();
 		Tutorial_Catcher = GameObject.Find("Tutorial_Catcher UI").GetComponent<Canvas>();
 		Catcher = GameObject.Find("Catcher UI").GetComponent<Canvas>();
+		Note = GameObject.Find("Note UI").GetComponent<Canvas>();
+		Brain = GameObject.Find("Brain UI").GetComponent<Canvas>();
+		Brain_Unlock = GameObject.Find("Brain Unlock UI").GetComponent<Canvas>();
 
         CanvasDict = new Dictionary<UICanvas, Canvas>()
         {
@@ -60,7 +71,10 @@ public class UiManager : MonoBehaviour {
 			{ UICanvas.Catcher, Catcher },
 			{ UICanvas.Tutorial, Tutorial },
 			{ UICanvas.Tutorial_Menu, Tutorial_Menu },
-			{ UICanvas.Tutorial_Catcher, Tutorial_Catcher }
+			{ UICanvas.Tutorial_Catcher, Tutorial_Catcher },
+			{ UICanvas.Note, Note },
+			{ UICanvas.Brain, Brain },
+			{ UICanvas.Brain_Unlock, Brain_Unlock }
         };
 
 
@@ -85,19 +99,101 @@ public class UiManager : MonoBehaviour {
 
 	public void ButtonCatcherPurchaseEvent (Image b)
 	{
-		int _value = int.Parse(b.sprite.name.Substring(7));
-		GameManager.I.EventCatcherPurchase (_value);
+		ShopFlower f = b.gameObject.GetComponent<ShopFlower> ();
+		if (GameManager.Data != null && f != null) {
+
+			if (f.Price <= GameManager.Data.TotalPlln) {
+
+				Debug.Log((-1) * f.Price + " pollen");
+				GameManager.Data.Update ((-1) * f.Price, PlayerData.UpdateType.Pollen);
+				GameManager.Data.MakeFlower (f.Index);
+				UiManager.I.UpdateCatcherPollenText (GameManager.Data.TotalPlln);
+				GameManager.Data.Write();
+				Debug.Log ("Purchase");
+
+			} else {
+				Debug.Log ("Not Enough Money");
+			}
+		} 
+		else {
+			UpdateCatcherPollenText (0);
+		}
 
 	}
 
 	public void ButtonNoteEvent ()
 	{
-		
+		GameManager.I.TrnsMenuToNote ();
 	}
 
 	public void ButtonBrainEvent ()
 	{
-		
+		GameManager.I.TrnsMenuToBrain();
+
+		for (int i = 0; i < GameManager.Data.RecoveredField.Length; i++) {
+
+			if (GameManager.Data.RecoveredField [i]) {
+				Brain.transform.FindChild ("Brain").FindChild (i.ToString ()).GetComponent<Button> ().interactable = false;
+			}
+		}
+
+
+	}
+
+	int currentUnlockIndex = -1;
+
+	public void ButtonBrainFieldEvent(Button b){
+		CanvasOn (UICanvas.Brain_Unlock);
+		//TODO:Change Unlock UI number
+		int index = int.Parse(b.name) - 1;
+
+		Brain_Unlock.transform.FindChild ("Name").GetComponent<Text> ().text = BrainFieldName [index];
+
+		currentUnlockIndex = index;
+	}
+
+	public void ButtonBrainUnlockYesEvent(){
+
+		int[] f = new int[8];
+
+		for (int i = 0; i < GameManager.Data.ShopFlower.Length; i++) {
+			f[i] = GameManager.Data.ShopFlower[i] - GameManager.Data.UsedFlower[i];
+		}
+
+		int index = currentUnlockIndex;
+
+		bool cannotbuyit = false;
+
+		for (int i = 0; i < f.Length; i++) {
+			if (f [i] < GameManager.Data.Brain [index,i]) {
+				cannotbuyit = true;
+				break;
+			}
+		}
+
+		if (!cannotbuyit) {
+			for (int i = 0; i < f.Length; i++) {
+				GameManager.Data.UseFlower (i, GameManager.Data.Brain [index, i]);
+			}
+			GameManager.Data.RecoverBrain (currentUnlockIndex);
+
+			GameManager.Data.Write ();
+
+			currentUnlockIndex = -1;
+			UpdateBrainFlowerText ();
+
+			CanvasOff (UICanvas.Brain_Unlock);
+		}
+		else {
+			Debug.Log ("Not Enough Flower");
+			currentUnlockIndex = - 1;
+			CanvasOff (UICanvas.Brain_Unlock);
+		}
+
+	}
+
+	public void ButtonBrainUnlockNoEvent(){
+		CanvasOff (UICanvas.Brain_Unlock);
 	}
 
 	public void ButtonSettingEvent ()
@@ -157,6 +253,33 @@ public class UiManager : MonoBehaviour {
     public void UpdateCatcherPollenText(int t)
 	{
 		Catcher.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
+	}
+
+	public void UpdateNoteFlowerText(){
+		Transform t = Note.transform.FindChild ("Scroll View").GetChild (0).GetChild (0); //Content
+		Transform s = Note.transform.FindChild ("Sumary"); //Content
+		for (int i = 0; i < t.childCount; i++) {
+			t.GetChild (i).FindChild ("Num").GetComponent<Text> ().text = GameManager.Data.ShopFlower [i].ToString();
+			s.GetChild (i).FindChild ("Num").GetComponent<Text> ().text = GameManager.Data.ShopFlower [i].ToString();
+		}
+	}
+
+	public void UpdateBrainFlowerText(){
+		Transform t = Brain.transform.FindChild ("Sumary");
+		for (int i = 0; i < t.childCount; i++) {
+			int value = GameManager.Data.ShopFlower [i] - GameManager.Data.UsedFlower[i];
+			t.GetChild (i).FindChild ("Num").GetComponent<Text> ().text = value.ToString();
+		}
+
+		int p = 0;
+
+		for (int i = 0; i < GameManager.Data.RecoveredField.Length; i++) {
+			if (GameManager.Data.RecoveredField [i])
+				p++;
+		}
+
+		int percentage = (int)(p * 100.0 / GameManager.Data.RecoveredField.Length);
+		Brain.transform.FindChild ("recovered").GetComponent<Text> ().text = percentage.ToString () + "%";
 	}
 
     private int _result;

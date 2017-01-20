@@ -33,6 +33,10 @@ public class SpawnPoint : MonoBehaviour {
 		get { return _collected; }
 	}
 
+	public void FlowerColleted (int index){
+		_collected [index] = true;
+	}
+
 	void OnDrawGizmos(){
 		Color c;
 

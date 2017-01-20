@@ -12,7 +12,7 @@ public class PlayerData {
     {
         get { return _storyon; }
     }
-
+			
     private bool _tutorial = false;
     public bool TutorialMode
     {
@@ -43,8 +43,44 @@ public class PlayerData {
     public List<string> FlowerIndex;
     private Dictionary<string, int> FlowerDict;
 
-	private bool[] Fields;
-	public bool[] FieldsData {
+
+	private int[] _shopflower = new int[8];
+	public int[] ShopFlower{
+
+		get { return _shopflower; }
+	}
+
+	private int[] _usedflower = new int[8];
+	public int[] UsedFlower{
+
+		get { return _usedflower; }
+	}
+
+	//brain flower
+	private const int BRAINFIELD = 4;
+	private int[,] _brainflower = new int[BRAINFIELD,8]{
+		{1,0,0,0,0,0,0,0},
+		{1,1,0,0,0,0,0,0},
+		{1,1,1,0,0,0,0,0},
+		{1,1,1,1,0,0,0,0}
+	};
+
+	private bool[] _recovered = new bool[BRAINFIELD];
+	public bool[] RecoveredField {
+		get { return _recovered; }
+	}
+
+	public int[,] Brain {
+		get { return _brainflower; }
+	}
+
+	private bool[,] FieldFlower;
+	public bool[,] FieldFlowerData {
+		get { return FieldFlower; }
+	}
+
+	private bool[] Fields = new bool[5];
+	public bool[] FieldData{
 		get { return Fields; }
 	}
 
@@ -52,14 +88,16 @@ public class PlayerData {
     {
 
         //init
-        //TODO : Load
-        LocalPlayCount = 0;
+        
+		_storyon = true;
+		_tutorial = false;
+
+		LocalPlayCount = 0;
         TotalPlayCount = 0;
         LocalPollen = 0;
         TotalPollen = 0;
-		Fields = new bool[FIELDNUM];
-		Fields [0] = true;
-
+		FieldFlower = new bool[FIELDNUM,8];
+		FieldFlower [0,0] = true;
 
         FlowerIndex = new List<string>()
         {
@@ -145,12 +183,39 @@ public class PlayerData {
         {
             sw.WriteLine(FlowerDict[FlowerIndex[i]]);
         }
-		sw.WriteLine ("f");
-		for (int i = 0; i < FIELDNUM; i++) {
-			sw.WriteLine (Fields [i]);
+
+		sw.WriteLine("shopf");
+		for (int i = 0; i < _shopflower.Length; i++)
+		{
+			sw.WriteLine(_shopflower[i]);
+		}
+		sw.WriteLine("usedf");
+		for (int i = 0; i < _usedflower.Length; i++)
+		{
+			sw.WriteLine(_usedflower[i]);
 		}
 
+		sw.WriteLine("rb");
+		for (int i = 0; i < _recovered.Length; i++)
+		{
+			sw.WriteLine(_recovered[i]);
+		}
 
+		sw.WriteLine ("ff");
+
+		for (int i = 0; i < FIELDNUM; i++) {
+			for (int j = 0; j < 8; j++) {
+				sw.Write (FieldFlower [i,j]+" ");
+			}
+			sw.WriteLine ("");
+		}
+
+		sw.WriteLine ("f");
+
+		for (int i = 0; i < FIELDNUM; i++) {
+			sw.WriteLine (Fields[i]);
+
+		}
 
         sw.Close();
         file.Close();
@@ -213,16 +278,64 @@ public class PlayerData {
                         FlowerDict[FlowerIndex[i]] = -1;
                 }
          	   break;
+			case "shopf":
+				for (int i = 0; i < _shopflower.Length; i++)
+				{
+					tmp = sr.ReadLine();
+					if (tmp != null)
+						_shopflower[i] = int.Parse(tmp);
+					else
+						_shopflower[i] = -1;
+				}
+				break;
+
+			case "usedf":
+				for (int i = 0; i < _usedflower.Length; i++)
+				{
+					tmp = sr.ReadLine();
+					if (tmp != null)
+						_usedflower[i] = int.Parse(tmp);
+					else
+						_usedflower[i] = -1;
+				}
+				break;
+
+			case "rb":
+				for (int i = 0; i < _recovered.Length; i++)
+				{
+					tmp = sr.ReadLine();
+					if (tmp != null)
+						_recovered[i] = bool.Parse(tmp);
+					else
+						_recovered[i] = false;
+				}
+				break;
+
 			case "f":
+				for (int i = 0; i < Fields.Length; i++)
+				{
+					tmp = sr.ReadLine();
+					if (tmp != null)
+						Fields[i] = bool.Parse(tmp);
+					else
+						Fields[i] = false;
+				}
+				break;
+
+			case "ff":
 				for (int i = 0; i < FIELDNUM; i++) {
 					tmp = sr.ReadLine ();
-					if (tmp != null)
-						Fields [i] = bool.Parse (tmp);
-					else {
-						if (i > 0) 
-							Fields [i] = false;
-						else
-							Fields [i] = true;
+					char[] delimiter = { ' ' };
+					string[] strings = tmp.Split(delimiter,8);
+
+					for(int j=0; j<8; j++){
+						
+						if (tmp != null)
+							FieldFlower [i,j] = bool.Parse (strings[j]);
+						else {
+							if (i > 0)
+								FieldFlower [i,j] = false;
+						}
 					}
 				}
 					break;
@@ -253,6 +366,23 @@ public class PlayerData {
         _storyon = true;
 
     }
+
+	public void ObtainFlower(int field, int index){
+		FieldFlower [field, index] = true;
+	}
+
+	public void MakeFlower(int index){
+		_shopflower [index]++;
+	}
+
+	public void UseFlower (int index, int value){
+		_usedflower [index] += value;
+	}
+
+	public void RecoverBrain (int index){
+		if (!_recovered [index])
+			_recovered [index] = true;
+	}
 
     public enum UpdateType { PlayCount, Pollen, LocalPCount, LocalPlln }
     public bool Update(int l, UpdateType type)

@@ -21,12 +21,21 @@ public class Flower : MonoBehaviour {
 		
 	private bool startfade = false;
 
+	public int field;
+	public int index;
+
 	private void OnTriggerEnter2D(Collider2D col)
 	{
 
 		if (col.gameObject.tag == "Player" && !startfade) {
 			StartCoroutine ("FadeOut");
 			startfade = true;
+
+			if (GameManager.I.CurrentState == GameManager.GameFlow.Game) {
+
+				FieldSpawningPool.I.FlowerPick (this);
+			}
+
 		}
 	}
 

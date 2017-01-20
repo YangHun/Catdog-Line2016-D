@@ -53,6 +53,8 @@ public class ShopScroller : MonoBehaviour {
 		int _cursor = ~(__p.BinarySearch (Cursor, new Vector2Comparer ()));
 
 		img.sprite = obj [_cursor].GetComponent<Image> ().sprite;
+		img.gameObject.GetComponent<ShopFlower> ().ChangeIndex( obj [_cursor].GetComponent<ShopFlower> ().Index);
+		img.gameObject.GetComponent<ShopFlower> ().ChangePrice (obj [_cursor].GetComponent<ShopFlower> ().Price);
 
 	}
 

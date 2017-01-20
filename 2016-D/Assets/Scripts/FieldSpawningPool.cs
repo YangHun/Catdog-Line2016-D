@@ -23,6 +23,8 @@ public class FieldSpawningPool : MonoBehaviour {
 	[SerializeField]
 	private UnityEngine.Object[] Flowers;
 
+
+
 	private Dictionary <Flower.Type, int> FlowerDict = new Dictionary<Flower.Type, int>() {
 
 		{ Flower.Type.Poppy, 0 }, //양귀비
@@ -93,44 +95,57 @@ public class FieldSpawningPool : MonoBehaviour {
 
 	private void _spawnFlower(SpawnPoint _sp, int index){
 
-		int num = _sp.IsFlowerCollected.Count;
+		int num = 8;
 
 		List<Flower.Type> l = new List<Flower.Type> ();
 
 		for (int i = 0; i < num; i++) {
-			if (_sp.IsFlowerCollected[i] == false) {
+			if (GameManager.Data.FieldFlowerData [index, i] == false) {
 				l.Add (_sp.SpawnFlowers [i]);
+			}
+			else {
+				_sp.FlowerColleted (i);
 			}
 		}
 
 		num = l.Count;
+		Debug.Log ("num : " + num);
 
-		//pick a random flower which player doesn't collect yet
-		Flower.Type r = l[Random.Range (0, num-1)];
-
-
-		//flower spawn (once at start game)
-
-		//TODO : 여러번 시작할때랑 저장되는 데이터?
-		if ((CurrentFlower[index] == null) || (CurrentFlower [index].type != r)) {
-
-		//		GameObject f= (GameObject)Instantiate (Flowers [FlowerDict [r]], _sp.SpawnPosition [FlowerDict [r] ], Quaternion.identity);
-		GameObject f = (GameObject)Instantiate (Flowers [0], _sp.SpawnPosition [0], Quaternion.identity);
-		f.transform.SetParent (_sp.gameObject.transform);
+		if (num > 0) {
+			//pick a random flower which player doesn't collect yet
+			Flower.Type r = l [Random.Range (0, num - 1)];
 
 
-			//UnityEngine.Object _p = Resources.Load ("Prefabs/Pollen/"+_fieldnum.ToString+"-"+ (FlowerDict [r]).ToString);
-			GameObject _p = Resources.Load ("Prefabs/Pollens/1-1", typeof(GameObject)) as GameObject;
-			GameObject p = (GameObject)Instantiate (_p, Vector3.zero, Quaternion.identity);
-			p.transform.SetParent (f.gameObject.transform.parent);
+			//flower spawn (once at start game)
 
-			CurrentFlower[index] = f.GetComponent<Flower>();
-			CurrentFlower[index].type = r;
+			//TODO : 여러번 시작할때랑 저장되는 데이터?
+			if ((CurrentFlower [index] == null)) {
+
+				GameObject f = (GameObject)Instantiate (Flowers [FlowerDict [r]], _sp.SpawnPosition [FlowerDict [r]], Quaternion.identity);
+				//	GameObject f = (GameObject)Instantiate (Flowers [0], _sp.SpawnPosition [0], Quaternion.identity);
+				f.transform.SetParent (_sp.gameObject.transform);
+
+				//UnityEngine.Object _p = Resources.Load ("Prefabs/Pollen/"+_fieldnum.ToString+"-"+ (FlowerDict [r]).ToString);
+				GameObject _p = Resources.Load ("Prefabs/Pollens/1-1", typeof(GameObject)) as GameObject;
+				GameObject p = (GameObject)Instantiate (_p, Vector3.zero, Quaternion.identity);
+				p.transform.SetParent (f.gameObject.transform.parent);
+
+				CurrentFlower [index] = f.GetComponent<Flower> ();
+				CurrentFlower [index].type = r;
+			}
+		}
+			
+	}
+
+	public void FlowerPick (Flower f){
+		int index;
+
+		for (index = 0; index < 5; index++) {
+			if (f == CurrentFlower [index])
+				break;
 		}
 
-
-
-
+		FieldManager.I.ObtainFlower (index, FlowerDict [f.type]);
 	}
 
 	private void _spawnEnemy(){

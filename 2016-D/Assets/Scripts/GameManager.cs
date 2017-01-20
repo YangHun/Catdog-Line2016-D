@@ -26,7 +26,21 @@ public class GameManager : MonoBehaviour {
     private int LocalPollen = 0;
     private int[] LocalFlowers;
 
-    public enum GameFlow { Load, Menu, Story, Tutorial, Tutorial_Menu, Tutorial_Catcher, Game, Save, Catcher, Null };
+    public enum GameFlow {
+		Load, 
+		Menu, 
+		Story, 
+		Tutorial, 
+		Tutorial_Menu, 
+		Tutorial_Catcher, 
+		Game, 
+		Save, 
+		Catcher, 
+		Note, 
+		Brain, 
+		Null
+	};
+
 	private GameFlow _flow_prev;
 	private GameFlow _flow_next;
 
@@ -133,6 +147,14 @@ public class GameManager : MonoBehaviour {
 			Debug.Log ("Catcher!");
             FlowCatcherState();
 			break;
+		case GameFlow.Note:
+			Debug.Log ("Note!");
+			FlowNoteState();
+			break;
+		case GameFlow.Brain:
+			Debug.Log ("Brain!");
+			FlowBrainState();
+			break;
         case GameFlow.Game:
             Debug.Log("Game!");
             FlowGameState();
@@ -163,8 +185,11 @@ public class GameManager : MonoBehaviour {
 			_teller = GameObject.Find ("Story UI").GetComponent<StoryTeller> ();
 			UiManager.I.CanvasOff (UiManager.UICanvas.Game);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Menu);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain_Unlock);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Note);
 			UiManager.I.CanvasOn (UiManager.UICanvas.Story);
 			_teller.StartStory ();
 
@@ -185,7 +210,10 @@ public class GameManager : MonoBehaviour {
 			UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Game);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Story);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain_Unlock);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Note);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Menu);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Catcher);
 
@@ -202,6 +230,7 @@ public class GameManager : MonoBehaviour {
 
 	public void TrnsTutorialToTMenu(){
 
+		LocalPlayCnt++;
 		UiManager.I.SetHandle (Vector3.zero, Vector3.zero, UiManager.UICanvas.Tutorial);
 		UiManager.I.ChangeCanvas (UiManager.UICanvas.Tutorial, UiManager.UICanvas.Tutorial_Menu);
         _data.TutorialModeOff();
@@ -215,7 +244,10 @@ public class GameManager : MonoBehaviour {
 			UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Game);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Story);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain_Unlock);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Note);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial_Catcher);
 
@@ -235,6 +267,8 @@ public class GameManager : MonoBehaviour {
 		UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Catcher);
 		UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Menu);
 		UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
+		UiManager.I.CanvasOff(UiManager.UICanvas.Note);
+		UiManager.I.CanvasOff(UiManager.UICanvas.Brain);
 
 		UiManager.I.CanvasOn (UiManager.UICanvas.Menu);
 
@@ -242,19 +276,22 @@ public class GameManager : MonoBehaviour {
 
 	}
 
+
 	void FlowTutorialCatcherState(){
 		if (isFirstFrame) {
 			UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Game);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Story);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain_Unlock);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Note);
 			UiManager.I.CanvasOn (UiManager.UICanvas.Tutorial_Menu);
 
 			UiManager.I.CanvasOn (UiManager.UICanvas.Tutorial_Catcher);
 		}
 	}
-
 
     void FlowMenuState(int n)
     {
@@ -263,9 +300,13 @@ public class GameManager : MonoBehaviour {
             //Change UI
             UiManager.I.CanvasOff(UiManager.UICanvas.Story);
             UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
-            UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Note);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Brain_Unlock);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial);
             UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Menu);
             UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial_Catcher);
+
 
             if (LocalPlayCnt == 0)
             {
@@ -312,39 +353,41 @@ public class GameManager : MonoBehaviour {
     }
 
 	public void TrnsMenuToCatcher(){
-		UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Catcher);
 		_flow_next = GameFlow.Catcher;
 	}
 
 	void FlowCatcherState() {
         if (isFirstFrame)
         {
+			UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Catcher);
             UiManager.I.UpdateCatcherPollenText(_data.TotalPlln);
         }
 	}	
 
-	public void EventCatcherPurchase(int value){
-
-		//TODO: purchase
-
-		if (_data != null) {
-
-			if (value <= _data.TotalPlln) {
-
-                Debug.Log((-1) * value + " pollen");
-				_data.Update ((-1) * value, PlayerData.UpdateType.Pollen);
-				UiManager.I.UpdateCatcherPollenText (_data.TotalPlln);
-                _data.Write();
-                Debug.Log ("Purchase");
-
-			} else {
-				Debug.Log ("Not Enough Money");
-			}
-		} 
-		else {
-			UiManager.I.UpdateCatcherPollenText (0);
-		}
+	public void TrnsMenuToNote(){
+		_flow_next = GameFlow.Note;
 	}
+
+	void FlowNoteState() {
+		if (isFirstFrame)
+		{
+			UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Note);
+			//TODO: Update Flower data ui text
+			UiManager.I.UpdateNoteFlowerText();
+		}
+	}	
+
+	public void TrnsMenuToBrain(){
+		_flow_next = GameFlow.Brain;
+	}
+
+	void FlowBrainState() {
+		if (isFirstFrame)
+		{
+			UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Brain);
+			UiManager.I.UpdateBrainFlowerText();
+		}
+	}	
 
     void FlowGameState()
     {

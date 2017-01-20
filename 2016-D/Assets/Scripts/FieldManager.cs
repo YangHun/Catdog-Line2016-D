@@ -31,7 +31,7 @@ public class FieldManager : MonoBehaviour {
 	private Player _player;
 
 	[SerializeField]
-	private bool[] _spawnfield = new bool[5];
+	private bool[] _spawnfield;
 
 	void Start () {
 
@@ -63,7 +63,7 @@ public class FieldManager : MonoBehaviour {
 			return;
 		
 
-		_spawnfield = GameManager.Data.FieldsData;
+		_spawnfield = GameManager.Data.FieldData;
 
 		for (int i = 0; i < _spawnfield.Length; i++) {
 			if (_spawnfield [i]) {
@@ -168,7 +168,8 @@ public class FieldManager : MonoBehaviour {
 
     public void ObtainFlower(int index, int value)
     {
-		GameManager.Data.Update(index, value);
+		GameManager.Data.ObtainFlower(index, value);
+		GameManager.Data.Write ();
     }
 
     private bool isGameEnd()

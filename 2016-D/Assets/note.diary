@@ -1,11 +1,11 @@
 s
 False
 t
-True
+False
 tc
-66
+41
 tp
-7912
+277
 fdict
 0
 0
@@ -15,6 +15,35 @@ fdict
 0
 0
 0
+shopf
+4
+1
+0
+0
+0
+0
+0
+0
+usedf
+3
+1
+0
+0
+0
+0
+0
+0
+rb
+True
+True
+False
+False
+ff
+True True True True True True True True 
+False False False False False False False False 
+False False False False False False False False 
+False False False False False False False False 
+False False False False False False False False 
 f
 True
 False
