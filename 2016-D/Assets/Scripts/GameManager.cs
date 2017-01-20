@@ -168,18 +168,20 @@ public class GameManager : MonoBehaviour {
 
     }
 
+
     void LateUpdate()
     {
 
 		if (isFirstFrame) {
 			isFirstFrame = !isFirstFrame;
 		}
+
     }
 
-		
-	StoryTeller _teller;
 
-	void FlowStoryState(){
+    StoryTeller _teller;
+
+    void FlowStoryState(){
 
 		if (isFirstFrame) {
 			_teller = GameObject.Find ("Story UI").GetComponent<StoryTeller> ();
@@ -193,16 +195,22 @@ public class GameManager : MonoBehaviour {
 			UiManager.I.CanvasOn (UiManager.UICanvas.Story);
 			_teller.StartStory ();
 
-		}	
+		}
 
 
-		if (_teller.isStoryEnd) {
+        if (_teller.EndGame)
+            Application.Quit();
+
+
+        else if (_teller.isStoryEnd) {
 			UiManager.I.CanvasOff (UiManager.UICanvas.Story);
             _data.StoryModeOff();
             _data.TutorialModeOn();
             _data.Write();
             _flow_next = GameFlow.Tutorial;
 		}
+
+
 	}
 
 	void FlowTutorialState(){
@@ -229,12 +237,12 @@ public class GameManager : MonoBehaviour {
 	}	
 
 	public void TrnsTutorialToTMenu(){
-
-		LocalPlayCnt++;
+        
 		UiManager.I.SetHandle (Vector3.zero, Vector3.zero, UiManager.UICanvas.Tutorial);
 		UiManager.I.ChangeCanvas (UiManager.UICanvas.Tutorial, UiManager.UICanvas.Tutorial_Menu);
         _data.TutorialModeOff();
         StartCoroutine("_save");
+        LocalPlayCnt++;
         _flow_next = GameFlow.Tutorial_Menu;
 	}
 
@@ -287,7 +295,7 @@ public class GameManager : MonoBehaviour {
 			UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial);
 			UiManager.I.CanvasOff (UiManager.UICanvas.Note);
-			UiManager.I.CanvasOn (UiManager.UICanvas.Tutorial_Menu);
+			UiManager.I.CanvasOff (UiManager.UICanvas.Tutorial_Menu);
 
 			UiManager.I.CanvasOn (UiManager.UICanvas.Tutorial_Catcher);
 		}
@@ -297,10 +305,14 @@ public class GameManager : MonoBehaviour {
     {
         if (isFirstFrame)
         {
+
+            UiManager.I.SetHandle(Vector3.zero, Vector3.zero, UiManager.UICanvas.Game);
+            UiManager.I.SetHandle(Vector3.zero, Vector3.zero, UiManager.UICanvas.Tutorial);
+
             //Change UI
             UiManager.I.CanvasOff(UiManager.UICanvas.Story);
             UiManager.I.CanvasOff(UiManager.UICanvas.Catcher);
-			UiManager.I.CanvasOff (UiManager.UICanvas.Note);
+			UiManager.I.CanvasOff(UiManager.UICanvas.Note);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Brain);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Brain_Unlock);
 			UiManager.I.CanvasOff(UiManager.UICanvas.Tutorial);
@@ -312,6 +324,7 @@ public class GameManager : MonoBehaviour {
             {
                 _startbg.SetActive(true);
                 UiManager.I.CanvasOff(UiManager.UICanvas.Game);
+                UiManager.I.CanvasOn(UiManager.UICanvas.Menu);
             }
             else
             {

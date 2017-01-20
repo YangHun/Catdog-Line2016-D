@@ -95,7 +95,10 @@ public class Player : MonoBehaviour {
 			Pollen p = col.gameObject.GetComponent<Pollen> ();
 			Debug.Log (p.Value);
 
-			FieldManager.I.ObtainPollen (p.Value);
+            if (GameManager.I.CurrentState == GameManager.GameFlow.Game)
+                FieldManager.I.ObtainPollen(p.Value);
+            else if (GameManager.I.CurrentState == GameManager.GameFlow.Tutorial)
+                TutorialManager.I.ObtainPollen(p.Value);
 		}
         else if (col.gameObject.tag == "Flower")
         {

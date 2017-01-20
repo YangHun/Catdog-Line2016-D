@@ -32,16 +32,19 @@ public class ShopScroller : MonoBehaviour {
 			_pos.Add (obj [i].GetComponent<RectTransform> ().position);
 		}
 
-		_w = (int)(gameObject.GetComponent<RectTransform> ().rect.width * 2.0f / 3.0f );
+		_w = (int)(gameObject.GetComponent<RectTransform> ().rect.width / 2.0f );
 		_h = (int)gameObject.GetComponent<RectTransform> ().rect.height;
 
 		Cursor = new Vector2 (_w, _h);
+        Debug.Log(Cursor);
 
 		ChangeImage ();
 	}
 
 	public void ChangeImage(){
 
+
+        //TODO : 고쳐야한다
 		List<Vector2> __p = new List<Vector2>();
 
 		for (int i = 0; i < _pos.Count; i++) {
@@ -53,8 +56,8 @@ public class ShopScroller : MonoBehaviour {
 		int _cursor = ~(__p.BinarySearch (Cursor, new Vector2Comparer ()));
 
 		img.sprite = obj [_cursor].GetComponent<Image> ().sprite;
-		img.gameObject.GetComponent<ShopFlower> ().ChangeIndex( obj [_cursor].GetComponent<ShopFlower> ().Index);
-		img.gameObject.GetComponent<ShopFlower> ().ChangePrice (obj [_cursor].GetComponent<ShopFlower> ().Price);
+		img.gameObject.GetComponent<ShopFlower> ().ChangeIndex( obj [_cursor + 1].GetComponent<ShopFlower> ().Index);
+		img.gameObject.GetComponent<ShopFlower> ().ChangePrice (obj [_cursor + 1 ].GetComponent<ShopFlower> ().Price);
 
 	}
 

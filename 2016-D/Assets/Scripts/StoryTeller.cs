@@ -65,6 +65,8 @@ public class StoryTeller : MonoBehaviour {
 		_timer = 0;
 	}
 
+    public bool EndGame = false;
+
 	public bool isStoryEnd{
 		get { return !_start; }
 	}
@@ -162,7 +164,9 @@ public class StoryTeller : MonoBehaviour {
 		case 6: //Speak_End
 			if (_timer <= 0) {
 				EndStory ();
-			}
+                EndGame = true;
+
+            }
 			break;
 
 		case 7:
@@ -218,7 +222,8 @@ public class StoryTeller : MonoBehaviour {
 		case 11: //Speak_End
 			if (_timer <= 0) {
 				EndStory ();
-			}
+                EndGame = true;
+            }
 			break;
 
 		}

@@ -133,7 +133,7 @@ public class UiManager : MonoBehaviour {
 		for (int i = 0; i < GameManager.Data.RecoveredField.Length; i++) {
 
 			if (GameManager.Data.RecoveredField [i]) {
-				Brain.transform.FindChild ("Brain").FindChild (i.ToString ()).GetComponent<Button> ().interactable = false;
+				Brain.transform.FindChild ("Brain").FindChild ((i+1).ToString ()).GetComponent<Button> ().interactable = false;
 			}
 		}
 
@@ -150,7 +150,10 @@ public class UiManager : MonoBehaviour {
 		Brain_Unlock.transform.FindChild ("Name").GetComponent<Text> ().text = BrainFieldName [index];
 
 		currentUnlockIndex = index;
-	}
+
+        UpdateBrainUnlockFlowerText();
+
+    }
 
 	public void ButtonBrainUnlockYesEvent(){
 
@@ -282,6 +285,17 @@ public class UiManager : MonoBehaviour {
 		Brain.transform.FindChild ("recovered").GetComponent<Text> ().text = percentage.ToString () + "%";
 	}
 
+    public void UpdateBrainUnlockFlowerText()
+    {
+        Transform t = Brain_Unlock.transform.FindChild("Sumary");
+        for (int i = 0; i < t.childCount; i++)
+        {
+            int v = GameManager.Data.Brain[currentUnlockIndex, i];
+            t.GetChild(i).FindChild("Num").GetComponent<Text>().text = v.ToString();
+        }
+
+    }
+
     private int _result;
 
     public void UpdateResultValue(int t)
@@ -291,8 +305,16 @@ public class UiManager : MonoBehaviour {
 
     public void UpdateResultText()
     {
-        string _text = "+" + _result.ToString();
-        Menu.transform.FindChild("Result").GetComponent<Text>().text = _text;
+        if (_result != 0)
+        {
+            string _text = "+" + _result.ToString();
+            Menu.transform.FindChild("Result").GetComponent<Text>().text = _text;
+        }
+        else
+        {
+            Menu.transform.FindChild("Result").GetComponent<Text>().text = "";
+
+        }
     }
 
     public void LocalFirstPlayMenu(bool b)

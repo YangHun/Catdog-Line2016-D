@@ -65,13 +65,14 @@ public class PlayerData {
 		{1,1,1,1,0,0,0,0}
 	};
 
-	private bool[] _recovered = new bool[BRAINFIELD];
+    public int[,] Brain
+    {
+        get { return _brainflower; }
+    }
+
+    private bool[] _recovered = new bool[BRAINFIELD];
 	public bool[] RecoveredField {
 		get { return _recovered; }
-	}
-
-	public int[,] Brain {
-		get { return _brainflower; }
 	}
 
 	private bool[,] FieldFlower;
@@ -356,14 +357,14 @@ public class PlayerData {
     public void TutorialModeOff()
     {
 
-        _storyon = false;
+        _tutorial = false;
 
     }
 
     public void TutorialModeOn()
     {
 
-        _storyon = true;
+        _tutorial = true;
 
     }
 
