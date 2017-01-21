@@ -208,6 +208,10 @@ public class UiManager : MonoBehaviour {
 		GameManager.I.TrnsAnyToMenu ();
 	}
 
+	public void ChangeTutorialText(){
+		Tutorial.transform.FindChild("Catcher's").GetComponentInChildren<Text>().text = "들어와!";
+	}
+
     public void ChangeCanvas (UICanvas pre, UICanvas next)
     {
         Canvas _pre = CanvasDict[pre];

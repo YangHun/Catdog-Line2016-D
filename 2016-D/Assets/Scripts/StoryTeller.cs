@@ -164,8 +164,6 @@ public class StoryTeller : MonoBehaviour {
 		case 6: //Speak_End
 			if (_timer <= 0) {
 				EndStory ();
-                EndGame = true;
-
             }
 			break;
 
