@@ -164,8 +164,6 @@ public class GameManager : MonoBehaviour {
             FlowSaveState();
             break;
         }
-        
-
     }
 
 
@@ -411,14 +409,12 @@ public class GameManager : MonoBehaviour {
             //Change UI
             if (LocalPlayCnt == 0)
             {
-                UiManager.I.ChangeCanvas(UiManager.UICanvas.Menu, UiManager.UICanvas.Game);
                 _startbg.SetActive(false);
 
             }
-            else
-            {
-                UiManager.I.CanvasOff(UiManager.UICanvas.Menu);
-            }
+
+			UiManager.I.ChangeCanvas(UiManager.UICanvas.Menu, UiManager.UICanvas.Game);
+
 
           //  resetTimer();
             FieldManager.I.Init();
@@ -474,20 +470,21 @@ public class GameManager : MonoBehaviour {
 
         if (_data.StoryMode)
         {
-            if (_data.TutorialMode)
-            {
-                _flow_next = GameFlow.Tutorial;
-            }
-
-            else
-            {
-                _flow_next = GameFlow.Story;
-            }
-
+			_flow_next = GameFlow.Story;
         }
         else 
         {
-            _flow_next = GameFlow.Menu;
+
+			if (_data.TutorialMode)
+			{
+				_flow_next = GameFlow.Tutorial;
+			}
+
+			else
+			{
+				_flow_next = GameFlow.Menu;	
+			}
+
         }
     }
 }
