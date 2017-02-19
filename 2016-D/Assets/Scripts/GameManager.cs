@@ -164,6 +164,14 @@ public class GameManager : MonoBehaviour {
             FlowSaveState();
             break;
         }
+
+		#if UNITY_ANDROID
+		if (Input.GetKey(KeyCode.Escape)) {
+			//TODO : Pause or Exit
+			Application.Quit();
+		}
+		#endif
+
     }
 
 
@@ -329,6 +337,9 @@ public class GameManager : MonoBehaviour {
                 UiManager.I.CanvasOn(UiManager.UICanvas.Menu);
                 UiManager.I.LocalFirstPlayMenu(false);
                 UiManager.I.UpdateResultText();
+
+				if(LocalPlayCnt > 1)
+					UiManager.I.UpdateMenuBackground ();
             }
 
         }
@@ -383,8 +394,12 @@ public class GameManager : MonoBehaviour {
 		if (isFirstFrame)
 		{
 			UiManager.I.ChangeCanvas (UiManager.UICanvas.Menu, UiManager.UICanvas.Note);
+			UiManager.I.UpdateNotePollenText (_data.TotalPlln);
 			//TODO: Update Flower data ui text
 			UiManager.I.UpdateNoteFlowerText();
+
+			FieldManager.I.InitTimer ();
+			UiManager.I.UpdateNoteAddTimeText (FieldManager.I.AddTime);
 		}
 	}	
 

@@ -129,13 +129,7 @@ public class UiManager : MonoBehaviour {
 	public void ButtonBrainEvent ()
 	{
 		GameManager.I.TrnsMenuToBrain();
-
-		for (int i = 0; i < GameManager.Data.RecoveredField.Length; i++) {
-
-			if (GameManager.Data.RecoveredField [i]) {
-				Brain.transform.FindChild ("Brain").FindChild ((i+1).ToString ()).GetComponent<Button> ().interactable = false;
-			}
-		}
+		UpdateBrainInactivedButton ();
 
 
 	}
@@ -186,6 +180,7 @@ public class UiManager : MonoBehaviour {
 			UpdateBrainFlowerText ();
 
 			CanvasOff (UICanvas.Brain_Unlock);
+			UpdateBrainInactivedButton ();
 		}
 		else {
 			Debug.Log ("Not Enough Flower");
@@ -262,6 +257,17 @@ public class UiManager : MonoBehaviour {
 		Catcher.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
 	}
 
+	public void UpdateNotePollenText(int t)
+	{
+		Note.transform.FindChild("Pollen").GetComponent<Text>().text = t.ToString();
+	}
+
+	public void UpdateNoteAddTimeText(float t){
+
+		string s = "Time 30 + " + t.ToString("N1") + " sec.";
+		Note.transform.FindChild("Time").GetComponent<Text>().text = s;
+	}
+
 	public void UpdateNoteFlowerText(){
 		Transform t = Note.transform.FindChild ("Scroll View").GetChild (0).GetChild (0); //Content
 		Transform s = Note.transform.FindChild ("Sumary"); //Content
@@ -269,6 +275,16 @@ public class UiManager : MonoBehaviour {
 			t.GetChild (i).FindChild ("Num").GetComponent<Text> ().text = GameManager.Data.ShopFlower [i].ToString();
 			s.GetChild (i).FindChild ("Num").GetComponent<Text> ().text = GameManager.Data.ShopFlower [i].ToString();
 		}
+	}
+
+	private void UpdateBrainInactivedButton(){
+		for (int i = 0; i < GameManager.Data.RecoveredField.Length; i++) {
+
+			if (GameManager.Data.RecoveredField [i]) {
+				Brain.transform.FindChild ("Brain").FindChild ((i+1).ToString ()).GetComponent<Button> ().interactable = false;
+			}
+		}
+
 	}
 
 	public void UpdateBrainFlowerText(){
@@ -299,6 +315,11 @@ public class UiManager : MonoBehaviour {
         }
 
     }
+
+	public void UpdateMenuBackground(){
+
+		Menu.transform.FindChild ("Image").gameObject.SetActive (true);
+	}
 
     private int _result;
 
