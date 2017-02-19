@@ -269,10 +269,10 @@ public class UiManager : MonoBehaviour {
 	}
 
 	public void UpdateNoteFlowerText(){
-		Transform t = Note.transform.FindChild ("Scroll View").GetChild (0).GetChild (0); //Content
+	//	Transform t = Note.transform.FindChild ("Scroll View").GetChild (0).GetChild (0); //Content
 		Transform s = Note.transform.FindChild ("Sumary"); //Content
-		for (int i = 0; i < t.childCount; i++) {
-			t.GetChild (i).FindChild ("Num").GetComponent<Text> ().text = GameManager.Data.ShopFlower [i].ToString();
+		for (int i = 0; i < s.childCount; i++) {
+	//		t.GetChild (i).FindChild ("Num").GetComponent<Text> ().text = GameManager.Data.ShopFlower [i].ToString();
 			s.GetChild (i).FindChild ("Num").GetComponent<Text> ().text = GameManager.Data.ShopFlower [i].ToString();
 		}
 	}
