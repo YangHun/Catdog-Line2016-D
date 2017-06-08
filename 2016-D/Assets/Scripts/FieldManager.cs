@@ -44,38 +44,12 @@ public class FieldManager : MonoBehaviour {
         {
             _manager = this;
         }
-	}
+    }
 
-	private const float PLAYTIME = 30.0f;
-	private float _add = 0.0f;
-	public float AddTime {
-
-		get { return _add; }
-	}
-
-	[SerializeField]
-	private float _timer;
-	public float Timer
-	{
-		get { return _timer; }
-	}
-
-	public void InitTimer(){
-		//Timer init
-		for (int i = 0; i < GameManager.Data.ShopFlower.Length; i++) {
-			_add += GameManager.Data.ShopFlower [i];
-		}
-
-		_timer = PLAYTIME + _add / 2.0f;
-
-	}
-
-	public void Init() //Call When Game Starts
+    public void Init() //Call When Game Starts
 	{
 		//TODO: Init field (for after 1st play)
         
-		InitTimer ();
-
 		// Player transform.position & local data
 		if ( _player == null )
 			_player = GameObject.FindGameObjectWithTag ("Player").GetComponent<Player>();
@@ -154,6 +128,14 @@ public class FieldManager : MonoBehaviour {
 
 	}
     
+	private const float PLAYTIME = 30.0f;
+
+	[SerializeField]
+	private float _timer = PLAYTIME;
+	public float Timer
+	{
+		get { return _timer; }
+	}
 		
 	void ActiveTimer(){
 		_timer -= Time.deltaTime;
@@ -171,7 +153,7 @@ public class FieldManager : MonoBehaviour {
 
 	void _resetTimer()
 	{
-		_timer = PLAYTIME + _add / 2.0f;
+		_timer = PLAYTIME;
 	}
 
 
